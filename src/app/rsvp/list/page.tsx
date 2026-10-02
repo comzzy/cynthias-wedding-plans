@@ -5,7 +5,8 @@ import Flourish from "@/components/Flourish";
 import { ArchReveal, Reveal } from "@/components/Reveal";
 import { BouquetBottomRight, BouquetTopLeft, Sprig } from "@/components/Botanicals";
 import { Bloom } from "@/components/Reveal";
-import { hostAllowed } from "@/lib/host";
+import { isHost } from "@/lib/host";
+import HostLogin, { LockButton } from "@/components/HostLogin";
 import { listRsvps } from "@/lib/store";
 import { latestPerGuest, totals } from "@/lib/guests";
 
@@ -15,12 +16,10 @@ export const metadata: Metadata = { title: "Guest list · Cynthia's Wedding Plan
 const when = (iso: string) =>
   new Date(iso).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", timeZone: "Africa/Lagos" });
 
-export default async function GuestList({ searchParams }: { searchParams: Promise<{ key?: string }> }) {
-  const { key } = await searchParams;
-  if (!hostAllowed(key)) return <Locked />;
+export default async function GuestList() {
+  if (!(await isHost())) return <Locked />;
   const rsvps = latestPerGuest(await listRsvps());
   const t = totals(rsvps);
-  const q = key ? `?key=${encodeURIComponent(key)}` : "";
 
   const stats = [
     { n: t.headcount, label: "People coming", script: "seats to set" },
@@ -63,7 +62,7 @@ export default async function GuestList({ searchParams }: { searchParams: Promis
             <div className="paper rounded-sm">
               <div className="flex items-center justify-between border-b hairline px-5 py-4">
                 <p className="caps text-[0.6rem] text-cocoa-soft">Every reply, newest first</p>
-                <a href={`/api/rsvp/csv${q}`} className="caps text-[0.58rem] text-rosegold-deep underline-offset-4 hover:underline">Download CSV</a>
+                <a href="/api/rsvp/csv" className="caps text-[0.58rem] text-rosegold-deep underline-offset-4 hover:underline">Download CSV</a>
               </div>
               {rsvps.length === 0 ? (
                 <div className="px-6 py-16 text-center">
@@ -119,6 +118,7 @@ export default async function GuestList({ searchParams }: { searchParams: Promis
               <div className="mt-6 text-center">
                 <Link href="/rsvp" className="caps text-[0.58rem] text-rosegold-deep underline-offset-4 hover:underline">Open the guest RSVP page</Link>
               </div>
+              <div className="mt-4 text-center"><LockButton /></div>
             </aside>
           </Reveal>
         </div>
@@ -138,14 +138,11 @@ function Locked() {
         </Bloom>
         <ArchReveal className="relative z-10">
           <div className="arch stagger px-7 pb-12 pt-24 text-center" style={{ ["--sd" as string]: "0.6s" }}>
-            <p className="caps text-[0.62rem] text-cocoa-soft">Private</p>
-            <h1 className="mt-3 font-script text-5xl text-rosegold-deep">For Cynthia only</h1>
-            <p className="mx-auto mt-4 max-w-xs font-display text-lg text-cocoa-soft">This list holds everyone&rsquo;s replies. Enter the host key to open it.</p>
-            <form method="get" className="mt-6 flex gap-2">
-              <label htmlFor="key" className="sr-only">Host key</label>
-              <input id="key" name="key" type="password" className="input" placeholder="Host key" autoComplete="current-password" />
-              <button className="btn-gold caps shrink-0 rounded-full px-5 text-[0.6rem]">Open</button>
-            </form>
+            <p className="caps text-[0.62rem] text-cocoa-soft">The guest list</p>
+            <h1 className="mt-3 font-script text-5xl text-rosegold-deep">Just for Cynthia</h1>
+            <Flourish className="mt-5" />
+            <p className="mx-auto mt-5 max-w-xs font-display text-lg text-cocoa-soft">Enter your password to see everyone&rsquo;s replies.</p>
+            <HostLogin />
           </div>
         </ArchReveal>
         </div>

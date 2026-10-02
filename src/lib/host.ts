@@ -1,19 +1,13 @@
 import "server-only";
+import { cookies } from "next/headers";
+import { HOST_COOKIE, hostKeyConfigured, verifyToken } from "./hostToken";
 
 /**
- * Cynthia's private views (guest list, hiding wishes) need ?key=RSVP_HOST_KEY.
- * Locally, with no key set, they are open so development stays easy.
+ * Is this request from Cynthia? True when her signed sign-in cookie is valid.
+ * Locally, with no RSVP_HOST_KEY set, the private views stay open so development is easy.
  * On Vercel, with no key set, they stay locked.
  */
-export function hostAllowed(key: string | null | undefined): boolean {
-  const want = process.env.RSVP_HOST_KEY;
-  if (!want) return !process.env.VERCEL;
-  return typeof key === "string" && key.length > 0 && timingSafeEqual(key, want);
-}
-
-function timingSafeEqual(a: string, b: string) {
-  if (a.length !== b.length) return false;
-  let r = 0;
-  for (let i = 0; i < a.length; i++) r |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  return r === 0;
+export async function isHost(): Promise<boolean> {
+  if (!hostKeyConfigured()) return !process.env.VERCEL;
+  return verifyToken((await cookies()).get(HOST_COOKIE)?.value);
 }

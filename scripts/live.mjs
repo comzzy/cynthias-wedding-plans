@@ -129,14 +129,15 @@ for (const w of [1280, 390]) {
     await p.getByRole("button", { name: "Send my RSVP" }).click();
     await p.waitForSelector("h1:has-text('Thank you')", { timeout: 30000 });
   }, p);
-  await t("guest list 390: refused without key, shows replies with key", async () => {
-    const r = await p.request.get(BASE + "/api/rsvp/list"); ok(r.status() === 401, "no-key " + r.status());
-    await p.goto(BASE + "/rsvp/list?key=" + encodeURIComponent(KEY), { waitUntil: "networkidle" }); await p.waitForTimeout(3000);
+  await t("guest list 390: refused without password, shows replies after sign-in", async () => {
+    const r = await p.request.get(BASE + "/api/rsvp/list"); ok(r.status() === 401, "no-cookie " + r.status());
+    await p.goto(BASE + "/rsvp/list", { waitUntil: "networkidle" }); await p.waitForTimeout(2500);
+    await p.fill("#host-pw", KEY); await p.getByRole("button", { name: "Open" }).click();
+    await p.waitForSelector("text=The guest list", { timeout: 20000 }); await p.waitForTimeout(3000);
     ok(await p.locator("text=Live Test Funmi").count() > 0 && await p.locator("text=Live Test Kemi").count() > 0, "both RSVPs listed");
-    const csv = await p.request.get(BASE + "/api/rsvp/csv?key=" + encodeURIComponent(KEY));
+    const csv = await p.request.get(BASE + "/api/rsvp/csv");
     ok(csv.status() === 200 && /Live Test Funmi/.test(await csv.text()), "csv");
     await noOverflow(p);
-    await p.evaluate(() => { document.querySelectorAll("input[type=password]").forEach(() => {}); });
     await shot(p, "guestlist-mobile-390", true);
   }, p);
   await p.context().close();

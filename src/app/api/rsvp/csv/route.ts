@@ -1,4 +1,4 @@
-import { hostAllowed } from "@/lib/host";
+import { isHost } from "@/lib/host";
 import { listRsvps } from "@/lib/store";
 import { latestPerGuest } from "@/lib/guests";
 
@@ -12,7 +12,7 @@ const cell = (v: unknown) => {
 };
 
 export async function GET(req: Request) {
-  if (!hostAllowed(new URL(req.url).searchParams.get("key"))) return new Response("Not allowed", { status: 401 });
+  if (!(await isHost())) return new Response("Not allowed", { status: 401 });
   const rows = latestPerGuest(await listRsvps());
   const csv = [
     ["Name", "Attending", "Party size", "Dietary", "Note", "Language", "Received"].map(cell).join(","),

@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Nav from "@/components/Nav";
 import Guestbook from "@/components/Guestbook";
 import { listWishes } from "@/lib/store";
-import { hostAllowed } from "@/lib/host";
+import { isHost } from "@/lib/host";
+import { hostKeyConfigured } from "@/lib/hostToken";
 import type { Wish } from "@/lib/guests";
 
 export const dynamic = "force-dynamic";
@@ -11,15 +12,14 @@ export const metadata: Metadata = {
   description: "Leave the couple a wish in your own voice.",
 };
 
-export default async function GuestbookPage({ searchParams }: { searchParams: Promise<{ key?: string }> }) {
-  const { key } = await searchParams;
-  // Hide controls only appear for Cynthia, and only when a host key is configured.
-  const host = Boolean(key) && Boolean(process.env.RSVP_HOST_KEY) && hostAllowed(key);
+export default async function GuestbookPage() {
+  // Hide controls only appear for Cynthia (signed in), and only when a host key is configured.
+  const host = hostKeyConfigured() && (await isHost());
   const wishes = (await listWishes()).filter((w) => !(w as Wish & { hidden?: boolean }).hidden);
   return (
     <main>
       <Nav />
-      <Guestbook initial={wishes} hostKey={host ? key! : null} />
+      <Guestbook initial={wishes} host={host} />
     </main>
   );
 }

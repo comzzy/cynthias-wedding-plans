@@ -23,7 +23,7 @@ It answers out loud. One tap gives a briefing: days left, what's overdue, and th
 
 **2. Voice RSVP and guest list (`/rsvp`).** A guest opens the link and says *"Na Funmi Adebayo. I go come with my husband. Abeg no add pepper for am."*
 It fills in a card: name, coming or not, how many, food needs, and a note. The guest checks it, fixes anything and sends it.
-Pidgin and typing both work. Cynthia's private list (`/rsvp/list`, behind a key) shows the headcount, the food needs for the caterer
+Pidgin and typing both work. Cynthia's private list (`/rsvp/list`, behind her password) shows the headcount, the food needs for the caterer
 and every reply, with a CSV download. If someone replies twice, the latest answer counts.
 
 <img src="screenshots/rsvp-mobile-390-confirm-full.png" alt="An RSVP confirm card on a phone" width="300">
@@ -75,7 +75,7 @@ LLM_BASE_URL=http://localhost:11434/v1 LLM_MODEL=gemma3:4b npm run dev
 | `ELEVENLABS_API_KEY` | Speech-to-text and text-to-speech. |
 | `LLM_API_KEY` or `GROQ_API_KEY` | The model endpoint. Not needed for Ollama. |
 | `LLM_BASE_URL`, `LLM_MODEL` | Optional. Defaults to Groq and `openai/gpt-oss-120b`. |
-| `RSVP_HOST_KEY` | Cynthia's key for the guest list, the CSV and hiding wishes. Open locally if unset, locked on Vercel if unset. |
+| `RSVP_HOST_KEY` | Cynthia's password for the guest list, the CSV and hiding wishes. She types it once and stays signed in for 30 days (a signed, httpOnly cookie; the password itself is never stored in the browser). Open locally if unset, locked on Vercel if unset. |
 | `BLOB_READ_WRITE_TOKEN` | A private Vercel Blob store for deployed data. Without it, data goes in `./.data`. |
 
 Built with Next.js, Tailwind and Framer Motion. The flowers are hand-drawn SVG, and the look follows a save-the-date card Cynthia liked.

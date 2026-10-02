@@ -12,7 +12,7 @@ import { THEME_LABEL, THEMES, type Theme, type Wish } from "@/lib/guests";
 const CAP_MS = 60_000;
 const ease = [0.22, 1, 0.36, 1] as const;
 
-export default function Guestbook({ initial, hostKey }: { initial: Wish[]; hostKey: string | null }) {
+export default function Guestbook({ initial, host }: { initial: Wish[]; host: boolean }) {
   const [wishes, setWishes] = useState<Wish[]>(initial);
   const [name, setName] = useState("");
   const [busy, setBusy] = useState(false);
@@ -59,7 +59,7 @@ export default function Guestbook({ initial, hostKey }: { initial: Wish[]; hostK
 
   const hide = async (id: string) => {
     if (!confirm("Hide this wish from the keepsake page?")) return;
-    const r = await fetch("/api/guestbook/hide", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, key: hostKey }) });
+    const r = await fetch("/api/guestbook/hide", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id }) });
     if (r.ok) setWishes((w) => w.filter((x) => x.id !== id));
   };
 
@@ -175,7 +175,7 @@ export default function Guestbook({ initial, hostKey }: { initial: Wish[]; hostK
                         <p className="mt-2 font-display text-[1.2rem] italic leading-snug text-cocoa">{w.text}</p>
                         <div className="mt-4 flex items-center justify-between gap-3">
                           <p className="font-script text-2xl text-rosegold-deep">{w.name}</p>
-                          {hostKey !== null && (
+                          {host && (
                             <button onClick={() => hide(w.id)} className="caps text-[0.5rem] text-taupe hover:text-rosegold-deep">Hide</button>
                           )}
                         </div>
