@@ -4,6 +4,7 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import MicButton, { type MicState } from "./MicButton";
 import PlanBoard from "./PlanBoard";
+import PrintPlan from "./PrintPlan";
 import Flourish from "./Flourish";
 import { ArchReveal, Bloom } from "./Reveal";
 import { BouquetBottomRight, BouquetTopLeft } from "./Botanicals";
@@ -148,6 +149,13 @@ export default function Planner() {
     setChat([]);
   };
 
+  const download = () => {
+    const t = document.title;
+    document.title = "Cynthia's wedding plan";
+    window.print();
+    setTimeout(() => { document.title = t; }, 500);
+  };
+
   const f = plan.facts;
   const days = daysUntil(f.date);
   const lastUser = [...chat].reverse().find((c) => c.role === "user");
@@ -162,7 +170,9 @@ export default function Planner() {
   }[state];
 
   return (
-    <div className="mx-auto grid max-w-6xl gap-10 px-4 pb-24 pt-2 sm:px-8 lg:grid-cols-[minmax(0,430px)_minmax(0,1fr)] lg:gap-12">
+    <>
+    <PrintPlan plan={plan} />
+    <div className="plan-screen mx-auto grid max-w-6xl gap-10 px-4 pb-24 pt-2 sm:px-8 lg:grid-cols-[minmax(0,430px)_minmax(0,1fr)] lg:gap-12">
       {/* Voice column */}
       <div className="relative lg:sticky lg:top-6 lg:self-start">
         <Bloom className="pointer-events-none absolute -left-[14%] -top-[6%] z-20 w-[48%] sm:-left-[18%] sm:w-[46%]" delay={0.5}>
@@ -260,7 +270,13 @@ export default function Planner() {
               </h2>
             </div>
             {plan.tasks.length > 0 && (
-              <button onClick={reset} className="caps shrink-0 text-[0.55rem] text-taupe underline-offset-4 hover:text-cocoa hover:underline">Start over</button>
+              <div className="flex shrink-0 flex-col items-end gap-2.5 sm:flex-row sm:items-center sm:gap-4">
+                <button onClick={download} className="caps flex items-center gap-2 rounded-full border border-rosegold/60 px-4 py-2 text-[0.58rem] text-rosegold-deep transition-colors hover:bg-white/60">
+                  <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M8 2.5v7.5M4.8 7l3.2 3.2L11.2 7M3 13h10" /></svg>
+                  Download plan
+                </button>
+                <button onClick={reset} className="caps text-[0.55rem] text-taupe underline-offset-4 hover:text-cocoa hover:underline">Start over</button>
+              </div>
             )}
           </div>
           <PlanBoard plan={plan} onToggle={(id) => setPlan((p) => ({ ...p, tasks: p.tasks.map((t) => (t.id === id ? { ...t, done: !t.done } : t)) }))} />
@@ -292,5 +308,6 @@ export default function Planner() {
         </motion.div>
       </div>
     </div>
+    </>
   );
 }

@@ -154,3 +154,42 @@ body {
     animation: none !important;
   }
 }
+
+/* ---------- Planner: "Download plan" print layout ---------- */
+.print-plan { font-family: var(--font-sans); }
+.pp-rule { width: 160px; height: 1px; background: linear-gradient(90deg, transparent, #c4927a, transparent); }
+.pp-facts { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 26px; }
+.pp-facts dt { font-size: 8px; color: #6e4c44; }
+.pp-facts dd { font-family: var(--font-display); font-size: 17px; margin: 1px 0 0; }
+.pp-sec { margin-top: 22px; border: 1px solid rgba(196,146,122,.45); border-radius: 3px; padding: 14px 18px 16px; background: #fbf8f4; break-inside: auto; }
+.pp-sec h2 { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; border-bottom: 1px solid rgba(196,146,122,.35); padding-bottom: 6px; margin-bottom: 8px; break-after: avoid; }
+.pp-sec h2 span { font-family: var(--font-script); font-size: 28px; color: #a8735d; line-height: 1; }
+.pp-sec h2 small { font-size: 8px; color: #6e4c44; }
+.pp-empty { font-family: var(--font-display); font-style: italic; color: #6e4c44; }
+.pp-tasks li { display: grid; grid-template-columns: 16px 1fr auto; gap: 9px; align-items: baseline; padding: 4px 0; border-bottom: 1px dotted rgba(196,146,122,.3); font-size: 12px; break-inside: avoid; }
+.pp-box { width: 12px; height: 12px; border: 1px solid #c4927a; border-radius: 50%; font-size: 8px; line-height: 11px; text-align: center; color: #fff; }
+.is-done .pp-box { background: #9aa982; border-color: #9aa982; }
+.is-done .pp-title { color: #a89585; text-decoration: line-through; text-decoration-color: rgba(196,146,122,.6); }
+.pp-meta { font-size: 7.5px; color: #a89585; white-space: nowrap; }
+.pp-budget li { display: grid; grid-template-columns: minmax(0,1.3fr) 1fr auto; gap: 12px; align-items: center; padding: 4px 0; font-size: 12px; break-inside: avoid; }
+.pp-bar { height: 4px; background: rgba(226,212,198,.7); border-radius: 4px; overflow: hidden; }
+.pp-bar i { display: block; height: 100%; background: linear-gradient(90deg, #a8735d, #c4927a, #ecc8b2); border-radius: 4px; }
+.pp-amt { font-family: var(--font-display); font-size: 14px; color: #6e4c44; }
+.pp-day { columns: 2; column-gap: 28px; }
+.pp-day li { display: flex; gap: 12px; padding: 3px 0; font-size: 12px; break-inside: avoid; }
+.pp-time { font-family: var(--font-display); font-style: italic; font-size: 15px; color: #a8735d; min-width: 44px; }
+.pp-vendors { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 18px; }
+.pp-vendors li { border-left: 2px solid rgba(196,146,122,.5); padding: 2px 0 2px 10px; break-inside: avoid; }
+.pp-vname { font-family: var(--font-display); font-size: 16px; }
+.pp-status { font-size: 7px; border: 1px solid; border-radius: 99px; padding: 1px 6px; margin-left: 6px; vertical-align: middle; }
+.pp-note { font-size: 11px; color: #6e4c44; }
+.pp-foot { margin-top: 18px; text-align: center; font-size: 7.5px; color: #a89585; }
+
+@media print {
+  @page { size: A4; margin: 14mm 13mm; }
+  html:has(#print-plan) { background: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body:has(#print-plan) { background: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body:has(#print-plan) .site-backdrop, body:has(#print-plan) .plan-screen, body:has(#print-plan) main > header { display: none !important; }
+  .print-plan { display: block !important; }
+  .print-plan * { animation: none !important; transition: none !important; opacity: 1 !important; transform: none !important; }
+}
