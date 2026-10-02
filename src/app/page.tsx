@@ -43,7 +43,7 @@ const STEPS = [
   ["You speak", "Tap the mic and talk the way you'd tell your sister. Lagos traffic, the family outfit colours and all."],
   ["It listens", "It catches every word, Nigerian names and all."],
   ["It plans", "It updates the checklist, budget, timeline and vendors."],
-  ["It answers", "A warm voice tells you what changed and what to do next."],
+  ["It answers", "A voice tells you what changed and what to do next."],
 ];
 
 export default function Home() {
