@@ -104,6 +104,25 @@ body {
 
 }
 
+
+/* Staggered entrance for any block of content: children rise in one after another. */
+@layer components {
+  .stagger > * { animation: rise 0.85s cubic-bezier(0.22, 1, 0.36, 1) backwards; }
+  .stagger > *:nth-child(1) { animation-delay: calc(var(--sd, 0s) + 0.00s); }
+  .stagger > *:nth-child(2) { animation-delay: calc(var(--sd, 0s) + 0.10s); }
+  .stagger > *:nth-child(3) { animation-delay: calc(var(--sd, 0s) + 0.20s); }
+  .stagger > *:nth-child(4) { animation-delay: calc(var(--sd, 0s) + 0.30s); }
+  .stagger > *:nth-child(5) { animation-delay: calc(var(--sd, 0s) + 0.40s); }
+  .stagger > *:nth-child(6) { animation-delay: calc(var(--sd, 0s) + 0.50s); }
+  .stagger > *:nth-child(7) { animation-delay: calc(var(--sd, 0s) + 0.60s); }
+  .stagger > *:nth-child(8) { animation-delay: calc(var(--sd, 0s) + 0.70s); }
+  .stagger > *:nth-child(9) { animation-delay: calc(var(--sd, 0s) + 0.80s); }
+  .stagger > *:nth-child(10) { animation-delay: calc(var(--sd, 0s) + 0.90s); }
+  .stagger > *:nth-child(11) { animation-delay: calc(var(--sd, 0s) + 1.00s); }
+  .stagger > *:nth-child(12) { animation-delay: calc(var(--sd, 0s) + 1.10s); }
+}
+@keyframes rise { from { opacity: 0; transform: translateY(14px); filter: blur(3px); } to { opacity: 1; transform: none; filter: none; } }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
   .petal { display: none; }

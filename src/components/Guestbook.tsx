@@ -80,7 +80,7 @@ export default function Guestbook({ initial, hostKey }: { initial: Wish[]; hostK
           <ArchReveal className="relative z-10">
             <div className="arch px-5 pb-14 pt-32 sm:px-12 sm:pt-36">
       {/* Recorder */}
-              <div className="text-center">
+              <div className="stagger text-center" style={{ ["--sd" as string]: "0.7s" }}>
                 <p className="caps text-[0.62rem] text-cocoa-soft">The guestbook</p>
                 <h1 className="mt-3 font-script text-5xl leading-none text-rosegold-deep sm:text-6xl">Leave a wish</h1>
                 <p className="mx-auto mt-5 max-w-sm font-display text-xl leading-snug text-cocoa-soft">

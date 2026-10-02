@@ -44,3 +44,4 @@ export function Bloom({ children, className = "", delay = 0, from = "left" }: { 
     </motion.div>
   );
 }
+

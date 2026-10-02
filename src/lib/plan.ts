@@ -32,7 +32,7 @@ const TEMPLATE: [string, string, number][] = [
   ["Book the reception venue", "Venue", 170],
   ["Book the photographer and videographer", "Photo & video", 150],
   ["Choose the caterer and book a tasting", "Catering", 140],
-  ["Pick the matching family outfit fabric (aso-ebi) and colours", "Attire", 120],
+  ["Pick the matching family outfit fabric and colours", "Attire", 120],
   ["Book the decorator", "Decor", 115],
   ["Book the MC and DJ or live band", "Entertainment", 110],
   ["Start the wedding dress and fittings", "Attire", 100],
@@ -162,6 +162,21 @@ export function applyPatch(plan: Plan, patch: PlanPatch): Plan {
   }
 
   return ensureBaseline(next);
+}
+
+/** Older saved plans used local terms; rewrite them in plain English. */
+export function migratePlan(plan: Plan): Plan {
+  const fix = (t: string) =>
+    t
+      .replace(/Pick the (?:aso-ebi fabric and colours, share with family|matching family outfit fabric \(aso-ebi\) and colours)/i, "Pick the matching family outfit fabric and colours")
+      .replace(/\s*\(aso-?ebi\)/gi, "")
+      .replace(/aso-?ebi/gi, "family outfits");
+  return {
+    ...plan,
+    tasks: plan.tasks.map((t) => ({ ...t, title: fix(t.title) })),
+    budget: plan.budget.map((b) => ({ ...b, category: fix(b.category) })),
+    facts: { ...plan.facts, style: plan.facts.style ? fix(plan.facts.style) : plan.facts.style },
+  };
 }
 
 /** Make sure a sensible scaffold exists once we know the basics. */

@@ -7,7 +7,7 @@ const clean = (s: unknown, max = 200) => (typeof s === "string" ? s.replace(/\s+
 // ---------- RSVP ----------
 
 const RSVP_SYSTEM = `You read a wedding guest's spoken RSVP for Cynthia's wedding in Nigeria and extract it.
-Guests may speak English, Nigerian Pidgin, or a mix (e.g. "I go come" = attending, "I no fit come" = not attending, "me and my wife" = 2 people, "I no dey chop meat" = vegetarian).
+Guests may speak English, Nigerian Pidgin, or a mix (e.g. "I go come" = attending, "I no fit come" = not attending, "me and my wife" = 2 people, "I no dey chop meat" = vegetarian, "Abeg no add pepper for am" = no pepper for them).
 Return ONLY JSON:
 {"name": string ("" if not said), "attending": true|false|null, "partySize": integer (people coming including the guest; 0 if not attending; 1 if attending and unclear),
  "dietary": [short lowercase tags in English, e.g. "vegetarian", "no pepper", "no pork", "nut allergy", "diabetic", "halal"],
@@ -31,7 +31,7 @@ export function fallbackRsvp(text: string): RsvpDraft {
   const dietary: string[] = [];
   if (/vegetarian|no (?:dey )?chop meat|don'?t eat meat|no meat/.test(t)) dietary.push("vegetarian");
   if (/vegan/.test(t)) dietary.push("vegan");
-  if (/no pepper|pepper no|not spicy|can'?t take pepper/.test(t)) dietary.push("no pepper");
+  if (/no pepper|no add pepper|pepper no|not spicy|can'?t take pepper|doesn'?t take pepper/.test(t)) dietary.push("no pepper");
   if (/no pork|halal/.test(t)) dietary.push(/halal/.test(t) ? "halal" : "no pork");
   if (/nut|groundnut/.test(t) && /allerg/.test(t)) dietary.push("nut allergy");
   if (/diabet|sugar/.test(t)) dietary.push("diabetic");

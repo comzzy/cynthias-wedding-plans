@@ -1,4 +1,4 @@
-export const naira = (n: number) =>
+export const money = (n: number) =>
   "₦" + Math.round(n).toLocaleString("en-NG", { maximumFractionDigits: 0 });
 
 /** Short spoken form, e.g. 5000000 -> "5 million naira" */

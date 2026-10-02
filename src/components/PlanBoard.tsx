@@ -3,7 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import type { Plan, VendorStatus } from "@/lib/types";
-import { naira, prettyDate, todayISO } from "@/lib/format";
+import { money, prettyDate, todayISO } from "@/lib/format";
 
 const TABS = ["Checklist", "Budget", "The day", "Vendors"] as const;
 type Tab = (typeof TABS)[number];
@@ -83,7 +83,7 @@ export default function PlanBoard({ plan, onToggle }: { plan: Plan; onToggle: (i
               plan.budget.length ? (
                 <div>
                   <p className="caps text-[0.6rem] text-cocoa-soft">Total</p>
-                  <p className="font-display text-4xl text-cocoa">{naira(plan.facts.budget ?? plan.budget.reduce((a, b) => a + b.amount, 0))}</p>
+                  <p className="font-display text-4xl text-cocoa">{money(plan.facts.budget ?? plan.budget.reduce((a, b) => a + b.amount, 0))}</p>
                   <ul className="mt-6 space-y-4">
                     {plan.budget.map((b, i) => {
                       const max = Math.max(...plan.budget.map((x) => x.amount));
@@ -91,7 +91,7 @@ export default function PlanBoard({ plan, onToggle }: { plan: Plan; onToggle: (i
                         <li key={b.category}>
                           <div className="flex items-baseline justify-between gap-3">
                             <span className="text-[0.95rem] text-cocoa">{b.category}</span>
-                            <span className="font-display text-lg text-cocoa-soft">{naira(b.amount)}</span>
+                            <span className="font-display text-lg text-cocoa-soft">{money(b.amount)}</span>
                           </div>
                           <div className="mt-1.5 h-[3px] overflow-hidden rounded-full bg-sand/50">
                             <motion.div className="h-full rounded-full bg-gradient-to-r from-rosegold-deep via-rosegold to-[#ecc8b2]" initial={{ width: 0 }} animate={{ width: `${(b.amount / max) * 100}%` }} transition={{ duration: 1, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }} />

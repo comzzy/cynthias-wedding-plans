@@ -3,7 +3,8 @@ import Link from "next/link";
 import Nav from "@/components/Nav";
 import Flourish from "@/components/Flourish";
 import { ArchReveal, Reveal } from "@/components/Reveal";
-import { Sprig } from "@/components/Botanicals";
+import { BouquetBottomRight, BouquetTopLeft, Sprig } from "@/components/Botanicals";
+import { Bloom } from "@/components/Reveal";
 import { hostAllowed } from "@/lib/host";
 import { listRsvps } from "@/lib/store";
 import { latestPerGuest, totals } from "@/lib/guests";
@@ -32,8 +33,15 @@ export default async function GuestList({ searchParams }: { searchParams: Promis
     <main>
       <Nav />
       <section className="mx-auto max-w-6xl px-4 pb-24 sm:px-8">
-        <ArchReveal>
-          <div className="arch mx-auto max-w-3xl px-6 pb-12 pt-24 text-center sm:pt-28">
+        <div className="relative mx-auto max-w-3xl">
+        <Bloom className="pointer-events-none absolute -left-[10%] -top-[8%] z-20 w-[42%] sm:-left-[14%] sm:w-[34%]" delay={0.5}>
+          <BouquetTopLeft id="gl-tl" className="h-auto w-full" />
+        </Bloom>
+        <Bloom className="pointer-events-none absolute -bottom-[14%] -right-[10%] z-0 w-[40%] sm:-right-[14%] sm:w-[30%]" delay={0.8} from="right">
+          <BouquetBottomRight id="gl-br" className="h-auto w-full" />
+        </Bloom>
+        <ArchReveal className="relative z-10">
+          <div className="arch stagger mx-auto max-w-3xl px-6 pb-12 pt-24 text-center sm:pt-28" style={{ ["--sd" as string]: "0.6s" }}>
             <p className="caps text-[0.62rem] text-cocoa-soft">For Cynthia&rsquo;s eyes</p>
             <h1 className="mt-3 font-script text-5xl leading-none text-rosegold-deep sm:text-6xl">The guest list</h1>
             <Flourish className="mt-5" />
@@ -48,6 +56,7 @@ export default async function GuestList({ searchParams }: { searchParams: Promis
             </div>
           </div>
         </ArchReveal>
+        </div>
 
         <div className="mx-auto mt-10 grid max-w-5xl gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
           <Reveal className="order-2 lg:order-1">
@@ -123,8 +132,12 @@ function Locked() {
     <main>
       <Nav />
       <section className="mx-auto flex max-w-6xl justify-center px-4 pb-24 sm:px-8">
-        <ArchReveal className="w-full max-w-md">
-          <div className="arch px-7 pb-12 pt-24 text-center">
+        <div className="relative w-full max-w-md">
+        <Bloom className="pointer-events-none absolute right-[-6%] top-[70%] z-0 w-[46%] sm:right-[-40%] sm:top-[55%] sm:w-[52%]" delay={0.6} from="right">
+          <BouquetBottomRight id="lock-br" className="h-auto w-full" />
+        </Bloom>
+        <ArchReveal className="relative z-10">
+          <div className="arch stagger px-7 pb-12 pt-24 text-center" style={{ ["--sd" as string]: "0.6s" }}>
             <p className="caps text-[0.62rem] text-cocoa-soft">Private</p>
             <h1 className="mt-3 font-script text-5xl text-rosegold-deep">For Cynthia only</h1>
             <p className="mx-auto mt-4 max-w-xs font-display text-lg text-cocoa-soft">This list holds everyone&rsquo;s replies. Enter the host key to open it.</p>
@@ -135,6 +148,7 @@ function Locked() {
             </form>
           </div>
         </ArchReveal>
+        </div>
       </section>
     </main>
   );

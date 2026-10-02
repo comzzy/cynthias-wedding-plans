@@ -100,7 +100,7 @@ export default function RsvpFlow() {
     <div className="relative">
       <AnimatePresence mode="wait">
         {step === "speak" && (
-          <motion.div key="speak" {...stepAnim} className="text-center">
+          <motion.div key="speak" {...stepAnim} className="stagger text-center" style={{ ["--sd" as string]: "0.6s" }}>
             <p className="caps text-[0.62rem] text-cocoa-soft">Kindly reply</p>
             <h1 className="mt-3 font-script text-5xl leading-none text-rosegold-deep sm:text-6xl">Will you be there?</h1>
             <p className="mx-auto mt-5 max-w-sm font-display text-xl leading-snug text-cocoa-soft">
@@ -131,7 +131,7 @@ export default function RsvpFlow() {
         )}
 
         {step === "confirm" && draft && (
-          <motion.div key="confirm" {...stepAnim}>
+          <motion.div key="confirm" {...stepAnim} className="stagger">
             <div className="text-center">
               <p className="caps text-[0.62rem] text-cocoa-soft">One last look</p>
               <h1 className="mt-3 font-script text-5xl leading-none text-rosegold-deep sm:text-6xl">Did we get it right?</h1>
@@ -139,7 +139,7 @@ export default function RsvpFlow() {
                 <p className="mx-auto mt-4 max-w-sm font-display text-base italic leading-snug text-taupe">You said: &ldquo;{draft.transcript}&rdquo;</p>
               )}
             </div>
-            <div className="mx-auto mt-7 max-w-md space-y-6 text-left">
+            <div className="stagger mx-auto mt-7 max-w-md space-y-6 text-left" style={{ ["--sd" as string]: "0.2s" }}>
               <Field label="Your name">
                 <input value={draft.name} onChange={(e) => upd({ name: e.target.value })} placeholder="e.g. Aunty Ngozi Okafor" className="input" />
               </Field>
@@ -191,7 +191,7 @@ export default function RsvpFlow() {
         )}
 
         {step === "done" && draft && (
-          <motion.div key="done" {...stepAnim} className="text-center">
+          <motion.div key="done" {...stepAnim} className="stagger text-center" style={{ ["--sd" as string]: "0.3s" }}>
             <motion.svg viewBox="0 0 80 80" className="mx-auto h-16 w-16" aria-hidden>
               <motion.circle cx="40" cy="40" r="36" fill="none" stroke="#c4927a" strokeWidth="1.2" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.2, ease }} />
               <motion.path d="M26 41l9 9 19-20" fill="none" stroke="#a8735d" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.7, delay: 0.9, ease }} />

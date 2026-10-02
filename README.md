@@ -1,8 +1,8 @@
 # Cynthia's Wedding Plans
 
 A voice wedding planner I built for my friend Cynthia, who is planning her wedding in Nigeria.
-She taps a mic and talks: *"Budget is 5 million naira, about 200 guests, Lagos, December."*
-An **open-weight language model** turns that into a real plan (checklist with due dates, a naira budget split,
+She taps a mic and talks: *"Budget is 5 million, about 200 guests, Lagos, December."*
+An **open-weight language model** turns that into a real plan (checklist with due dates, a budget split,
 the order of the day, a vendor tracker), and **ElevenLabs** listens to her and answers back in a warm voice.
 
 Built for the DEV **Hacktoberfest 2026 Weekend Challenge: Build for a Friend**, entering *Best Use of ElevenLabs*.
@@ -38,7 +38,7 @@ Built for the DEV **Hacktoberfest 2026 Weekend Challenge: Build for a Friend**, 
 * **Daily briefing:** one tap and it tells her how many days are left, what's overdue and the next three things due, out loud.
 * **Offline helper:** if no model is reachable, a small rule-based parser still catches budgets, guest counts, months and
   "we booked the venue", and the UI says plainly that the model is offline.
-* **Starting scaffold:** once the basics are known, a Nigerian-wedding checklist (matching family outfit fabric, called aso-ebi; the traditional engagement list; the gele (head-tie) artist; etc.)
+* **Starting scaffold:** once the basics are known, a Nigerian-wedding checklist (matching family outfit fabric, the traditional engagement list, the head-tie artist, etc.)
   is laid out and squeezed to fit however much time is left; the model then adds to it and edits it.
 
 ## Part II: Voice RSVP
@@ -75,6 +75,14 @@ npm install
 cp .env.example .env.local   # add ELEVENLABS_API_KEY and an LLM key
 npm run dev                  # http://localhost:3000
 ```
+
+Optional demo data (6 RSVPs and 5 written wishes, no ElevenLabs credits used, Groq tags the wishes):
+
+```bash
+npm run seed                 # BASE=http://localhost:3000 by default
+```
+
+End-to-end tests live in `scripts/` (`full.mjs`, `rsvp-mobile.mjs`, `shots.mjs`, `lock.mjs`). They need `playwright-core` and Chrome, and they expect the prod server on port 3200 with `RSVP_HOST_KEY=e2e-key`. Run them with `NO_TTS=1` to save credits.
 
 ### Run the brain locally with Ollama
 

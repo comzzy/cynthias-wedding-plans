@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { briefingWithModel, llmConfig, planWithModel } from "@/lib/llm";
-import { applyPatch, briefingFacts, ensureBaseline } from "@/lib/plan";
+import { applyPatch, briefingFacts, ensureBaseline, migratePlan } from "@/lib/plan";
 import { fallbackPatch } from "@/lib/fallback";
 import { emptyPlan, type ChatTurn, type Plan, type PlanResponse } from "@/lib/types";
 
@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     history?: ChatTurn[];
     mode?: "chat" | "briefing";
   };
-  const plan: Plan = body.plan && typeof body.plan === "object" ? { ...emptyPlan(), ...body.plan } : emptyPlan();
+  const plan: Plan = migratePlan(body.plan && typeof body.plan === "object" ? { ...emptyPlan(), ...body.plan } : emptyPlan());
   const history = Array.isArray(body.history) ? body.history.slice(-6) : [];
   const cfg = llmConfig();
   const label = `${cfg.model} via ${cfg.provider}`;

@@ -6,9 +6,10 @@ import MicButton, { type MicState } from "./MicButton";
 import PlanBoard from "./PlanBoard";
 import Flourish from "./Flourish";
 import { ArchReveal, Bloom } from "./Reveal";
-import { BouquetTopLeft } from "./Botanicals";
+import { BouquetBottomRight, BouquetTopLeft } from "./Botanicals";
+import { migratePlan } from "@/lib/plan";
 import { emptyPlan, type ChatTurn, type Plan, type PlanResponse } from "@/lib/types";
-import { daysUntil, naira, prettyDate } from "@/lib/format";
+import { daysUntil, money, prettyDate } from "@/lib/format";
 import { speak, startRecording, stopSpeaking, unlockAudio, type Recording } from "@/lib/audio";
 
 const STORE = "cwp.plan.v1";
@@ -45,7 +46,7 @@ export default function Planner() {
   useEffect(() => {
     try {
       const p = localStorage.getItem(STORE);
-      if (p) setPlan({ ...emptyPlan(), ...JSON.parse(p) });
+      if (p) setPlan(migratePlan({ ...emptyPlan(), ...JSON.parse(p) }));
       const c = localStorage.getItem(CHAT);
       if (c) setChat(JSON.parse(c));
       const v = localStorage.getItem(VOICE);
@@ -179,8 +180,11 @@ export default function Planner() {
         <Bloom className="pointer-events-none absolute -left-[14%] -top-[6%] z-20 w-[48%] sm:-left-[18%] sm:w-[46%]" delay={0.5}>
           <BouquetTopLeft id="pl-tl" className="h-auto w-full" />
         </Bloom>
+        <Bloom className="pointer-events-none absolute -bottom-[4%] -right-[12%] z-0 w-[44%] sm:-right-[16%]" delay={0.8} from="right">
+          <BouquetBottomRight id="pl-br" className="h-auto w-full" />
+        </Bloom>
         <ArchReveal className="relative z-10">
-          <div className="arch px-5 pb-8 pt-24 text-center sm:px-8 sm:pt-28">
+          <div className="arch stagger px-5 pb-8 pt-24 text-center sm:px-8 sm:pt-28" style={{ ["--sd" as string]: "0.7s" }}>
             <p className="caps text-[0.62rem] text-cocoa-soft">The planner</p>
             <h1 className="mt-2 font-script text-5xl leading-none text-rosegold-deep sm:text-6xl">Talk to me</h1>
 
@@ -195,7 +199,7 @@ export default function Planner() {
               )}
               {(f.budget || f.guests || f.city || f.date) && (
                 <p className="caps mt-2 flex flex-wrap justify-center gap-x-3 gap-y-1 text-[0.58rem] text-cocoa-soft">
-                  {f.budget && <span>{naira(f.budget)}</span>}
+                  {f.budget && <span>{money(f.budget)}</span>}
                   {f.guests && <span>{f.guests} guests</span>}
                   {f.city && <span>{f.city}</span>}
                   {f.date && <span>{prettyDate(f.date, { weekday: "short", day: "numeric", month: "short" })}</span>}

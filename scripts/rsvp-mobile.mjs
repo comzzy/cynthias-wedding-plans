@@ -2,7 +2,7 @@ import { chromium } from "playwright-core";
 const b = await chromium.launch({ executablePath: "/usr/bin/google-chrome", args: ["--no-sandbox"] });
 const p = await b.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2 });
 await p.goto("http://localhost:3200/rsvp", { waitUntil: "networkidle" }); await p.waitForTimeout(2500);
-await p.fill("#rsvp-text", "Na Funmi Adebayo. I go come with my husband. Abeg no pepper for am. Congrats my sister!");
+await p.fill("#rsvp-text", "Na Funmi Adebayo. I go come with my husband. Abeg no add pepper for am. Congrats my sister!");
 await p.getByRole("button", { name: "Continue" }).click();
 await p.waitForSelector("text=Did we get it right?", { timeout: 20000 }); await p.waitForTimeout(1500);
 await p.screenshot({ path: "/workspace/cynthias-wedding-plans/screenshots/rsvp-mobile-390-confirm-full.png", fullPage: true });
