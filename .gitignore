@@ -45,3 +45,6 @@ next-env.d.ts
 # local secrets
 .host-key
 .data/
+
+# third-party voice previews (local only)
+voice-samples/

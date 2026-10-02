@@ -3,6 +3,14 @@ import Nav from "@/components/Nav";
 import Flourish from "@/components/Flourish";
 import { ArchReveal, Bloom, Reveal } from "@/components/Reveal";
 import { BouquetBottomRight, BouquetTopLeft, Sprig } from "@/components/Botanicals";
+import fs from "node:fs";
+import path from "node:path";
+import LetterPlayer from "@/components/LetterPlayer";
+import letter from "@/content/letter.json";
+
+// Shown only when the one-time recording exists (scripts/make-letter-audio.mjs).
+const LETTER_AUDIO = "/audio/kane-letter.mp3";
+const hasLetterAudio = fs.existsSync(path.join(process.cwd(), "public", LETTER_AUDIO));
 
 const PARTS = [
   {
@@ -148,19 +156,15 @@ export default function Home() {
       <section className="mx-auto max-w-3xl px-5 py-16 sm:px-8 sm:py-24">
         <Reveal className="paper relative mx-auto max-w-2xl rounded-sm px-7 py-12 sm:px-14 sm:py-16">
           <Sprig className="mx-auto h-10 w-20" />
-          <p className="mt-4 text-center font-script text-5xl text-rosegold-deep sm:text-6xl">Cynthia,</p>
+          <p className="mt-4 text-center font-script text-5xl text-rosegold-deep sm:text-6xl">{letter.greeting}</p>
           <div className="mt-7 space-y-5 font-display text-xl leading-relaxed text-cocoa-soft sm:text-[1.4rem]">
-            <p>
-              Since the day you said yes, your head has been full of venues, guest lists, matching outfit colours and a hundred little decisions. I couldn&rsquo;t plan your wedding for you, but I could build something that carries the weight with you.
-            </p>
-            <p>
-              So this is my wedding gift: a planner that listens. Tell it what&rsquo;s on your mind, and it keeps the list, minds the budget, counts down the days and talks you through what&rsquo;s next, so you can spend less time worrying and more time enjoying every moment before you walk down that aisle.
-            </p>
+            {letter.paragraphs.map((p) => <p key={p.slice(0, 24)}>{p}</p>)}
           </div>
           <div className="mt-9 text-right">
-            <p className="font-display text-lg italic text-cocoa">With all my love, your best friend,</p>
-            <p className="font-script text-4xl text-rosegold-deep">Kane</p>
+            <p className="font-display text-lg italic text-cocoa">{letter.signoff}</p>
+            <p className="font-script text-4xl text-rosegold-deep">{letter.name}</p>
           </div>
+          {hasLetterAudio && <LetterPlayer src={LETTER_AUDIO} />}
         </Reveal>
       </section>
 
