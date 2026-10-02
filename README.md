@@ -10,8 +10,8 @@ Built for the DEV **Hacktoberfest 2026 Weekend Challenge: Build for a Friend**, 
 | Part | Status |
 | --- | --- |
 | I. Voice Planner | ✅ working |
-| II. Voice RSVP: guests speak their RSVP, which fills the guest list | coming soon (placeholder at `/rsvp`) |
-| III. Voice Guestbook: spoken wishes become a keepsake | coming soon (placeholder at `/guestbook`) |
+| II. Voice RSVP (`/rsvp`, host view `/rsvp/list`) | ✅ working |
+| III. Voice Guestbook keepsake (`/guestbook`) | ✅ working |
 
 ## How it works
 
@@ -38,8 +38,35 @@ Built for the DEV **Hacktoberfest 2026 Weekend Challenge: Build for a Friend**, 
 * **Daily briefing:** one tap and it tells her how many days are left, what's overdue and the next three things due, out loud.
 * **Offline helper:** if no model is reachable, a small rule-based parser still catches budgets, guest counts, months and
   "we booked the venue", and the UI says plainly that the model is offline.
-* **Starting scaffold:** once the basics are known, a Nigerian-wedding checklist (aso-ebi, traditional engagement list, gele artist, etc.)
+* **Starting scaffold:** once the basics are known, a Nigerian-wedding checklist (matching family outfit fabric, called aso-ebi; the traditional engagement list; the gele (head-tie) artist; etc.)
   is laid out and squeezed to fit however much time is left; the model then adds to it and edits it.
+
+## Part II: Voice RSVP
+
+A guest opens `/rsvp`, taps the mic and says something like *"Na Tunde. I go come, but I no dey chop meat o."*
+ElevenLabs Scribe transcribes it, and the open model pulls out a structured RSVP: name, attending, party size,
+food needs as short English tags (Pidgin understood), language, and a note. The guest sees it as an editable card,
+fixes anything, and sends it. An optional "Hear a thank-you" button speaks a short thank-you with ElevenLabs.
+If the model is unreachable, a rule-based parser fills the card instead. Typing works too.
+
+Cynthia's view is `/rsvp/list?key=RSVP_HOST_KEY`. It shows people coming (headcount), accepted, declined, replies, a
+food-needs summary for the caterer, every reply, and a CSV download (`/api/rsvp/csv?key=...`).
+If a guest RSVPs again under the same name, the latest answer wins.
+
+## Part III: Voice Guestbook
+
+Guests record a wish of up to 60 seconds at `/guestbook` (a gold ring shows the time left), or write one.
+Scribe transcribes it, and the model gives it a theme (blessing or prayer, advice, funny, memory) and a short heading.
+The keepsake page groups wishes by theme, with the written words and the original recording.
+Cynthia can hide a wish from `/guestbook?key=RSVP_HOST_KEY`.
+
+## Storage
+
+`src/lib/store.ts` is a small adapter. Each RSVP, each wish and each recording is its own object, so two guests saving at the same time never overwrite each other.
+
+* **Deployed:** a **Vercel Blob** store, private access. Set `BLOB_READ_WRITE_TOKEN`, which Vercel adds automatically when you connect a Blob store to the project. Recordings are streamed back through `/api/audio/[id]`, never exposed as public URLs.
+* **Local development:** JSON files and audio in `./.data` (git-ignored), or wherever `DATA_DIR` points.
+* On Vercel *without* a Blob token it falls back to `/tmp`, which is wiped between invocations. Don't ship like that.
 
 ## Run it
 
@@ -67,6 +94,10 @@ LLM_BASE_URL=http://localhost:11434/v1 LLM_MODEL=gemma3:4b npm run dev
 | `LLM_API_KEY` | Key for that endpoint (falls back to `GROQ_API_KEY` for Groq). Not needed for Ollama. |
 | `LLM_MODEL` | Default `openai/gpt-oss-120b` on Groq, `gemma3:1b` on Ollama. |
 | `LLM_FALLBACK_MODEL` | Optional backup model. Default `openai/gpt-oss-20b` on Groq. |
+| `BLOB_READ_WRITE_TOKEN` | Vercel Blob store (private) for RSVPs, wishes and recordings. Without it, files go in `.data/`. |
+| `BLOB_ACCESS` | Optional. `private` (default) or `public`, and it must match the store's access setting. |
+| `RSVP_HOST_KEY` | Cynthia's key for `/rsvp/list`, the CSV and hiding wishes. Open locally if unset; **locked on Vercel if unset**. |
+| `DATA_DIR` | Optional local storage folder (default `./.data`). |
 
 ## Design
 
@@ -81,4 +112,4 @@ Everything respects `prefers-reduced-motion`.
 
 ## Credits used while building
 
-ElevenLabs testing was kept tiny: 2 short TTS calls plus 1 short Scribe clip.
+ElevenLabs testing was kept tiny: about 190 credits in total across the planner, RSVP and guestbook tests (short Scribe clips plus 3 short TTS replies).

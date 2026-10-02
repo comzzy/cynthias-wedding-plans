@@ -5,13 +5,13 @@ import { motion, useReducedMotion } from "framer-motion";
 export type MicState = "idle" | "listening" | "transcribing" | "thinking" | "speaking";
 
 /** Round mic button with a living ring of bars: the mic level while listening, the voice while speaking. */
-export default function MicButton({ state, analyser, onClick, disabled }: { state: MicState; analyser: AnalyserNode | null; onClick: () => void; disabled?: boolean }) {
+export default function MicButton({ state, analyser, onClick, disabled, progress = 0, idleLabel = "Tap to talk to your planner" }: { state: MicState; analyser: AnalyserNode | null; onClick: () => void; disabled?: boolean; progress?: number; idleLabel?: string }) {
   const canvas = useRef<HTMLCanvasElement>(null);
   const reduce = useReducedMotion();
   const stateRef = useRef(state);
   const anRef = useRef(analyser);
-  stateRef.current = state;
-  anRef.current = analyser;
+  const progRef = useRef(progress);
+  useEffect(() => { stateRef.current = state; anRef.current = analyser; progRef.current = progress; }, [state, analyser, progress]);
 
   useEffect(() => {
     const cv = canvas.current!;
@@ -58,6 +58,16 @@ export default function MicButton({ state, analyser, onClick, disabled }: { stat
         g.stroke();
       }
       g.globalAlpha = 1;
+      const pr = progRef.current;
+      if (pr > 0) {
+        // the recording cap, as a thin gold arc
+        g.strokeStyle = "rgba(196,146,122,.25)";
+        g.lineWidth = 1.5;
+        g.beginPath(); g.arc(S / 2, S / 2, 84, 0, Math.PI * 2); g.stroke();
+        g.strokeStyle = pr > 0.85 ? "#a8735d" : "#c4927a";
+        g.lineWidth = 2.5;
+        g.beginPath(); g.arc(S / 2, S / 2, 84, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * Math.min(pr, 1)); g.stroke();
+      }
       raf = requestAnimationFrame(draw);
     };
     raf = requestAnimationFrame(draw);
@@ -66,7 +76,7 @@ export default function MicButton({ state, analyser, onClick, disabled }: { stat
 
   const active = state === "listening" || state === "speaking";
   const label =
-    state === "listening" ? "Stop and send" : state === "speaking" ? "Stop speaking" : state === "idle" ? "Tap to talk to your planner" : "Working";
+    state === "listening" ? "Stop and send" : state === "speaking" ? "Stop speaking" : state === "idle" ? idleLabel : "Working";
 
   return (
     <div className="relative mx-auto h-[260px] w-[260px]">

@@ -1,13 +1,33 @@
-import ComingSoon from "@/components/ComingSoon";
-export const metadata = { title: "Voice RSVP · Cynthia's Wedding Plans" };
-export default function Rsvp() {
+import type { Metadata } from "next";
+import Nav from "@/components/Nav";
+import RsvpFlow from "@/components/RsvpFlow";
+import { ArchReveal, Bloom } from "@/components/Reveal";
+import { BouquetBottomRight, BouquetTopLeft } from "@/components/Botanicals";
+
+export const metadata: Metadata = {
+  title: "RSVP · Cynthia's Wedding Plans",
+  description: "Tell Cynthia you're coming. Just say it; English or Pidgin.",
+};
+
+export default function RsvpPage() {
   return (
-    <ComingSoon
-      numeral="II"
-      title="Voice RSVP"
-      script="just say you're coming"
-      body="Guests will open one link, tap once and tell us who's coming. No forms, no passwords, no “please resend the flyer”."
-      points={["Names, number of people and food needs, captured from a voice note", "English or Pidgin, however they talk", "Lands straight in Cynthia's guest list and headcount"]}
-    />
+    <main>
+      <Nav />
+      <section className="mx-auto flex max-w-6xl justify-center px-4 pb-28 pt-4 sm:px-8">
+        <div className="relative w-full max-w-[560px]">
+          <Bloom className="pointer-events-none absolute -left-[14%] -top-[5%] z-20 w-[46%] sm:-left-[28%] sm:-top-[7%] sm:w-[58%]" delay={0.5}>
+            <BouquetTopLeft id="rsvp-tl" className="h-auto w-full" />
+          </Bloom>
+          <Bloom className="pointer-events-none absolute -bottom-[5%] -right-[14%] z-0 w-[44%] sm:-right-[30%] sm:w-[56%]" delay={0.8} from="right">
+            <BouquetBottomRight id="rsvp-br" className="h-auto w-full" />
+          </Bloom>
+          <ArchReveal className="relative z-10">
+            <div className="arch px-5 pb-14 pt-32 sm:px-12 sm:pt-36">
+              <RsvpFlow />
+            </div>
+          </ArchReveal>
+        </div>
+      </section>
+    </main>
   );
 }

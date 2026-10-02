@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import type { Plan, VendorStatus } from "@/lib/types";
 import { naira, prettyDate, todayISO } from "@/lib/format";
@@ -57,6 +58,12 @@ export default function PlanBoard({ plan, onToggle }: { plan: Plan; onToggle: (i
                                 </span>
                                 <span className="flex-1">
                                   <span className={`block text-[0.95rem] leading-snug ${t.done ? "text-taupe line-through decoration-rosegold/50" : "text-cocoa"}`}>{t.title}</span>
+                                  {/rsvp/i.test(t.title) && (
+                                    <span className="mt-1 flex flex-wrap gap-x-4 gap-y-1">
+                                      <Link href="/rsvp" className="caps text-[0.56rem] text-rosegold-deep underline-offset-4 hover:underline" onClick={(e) => e.stopPropagation()}>Open the RSVP page</Link>
+                                      <CopyLink />
+                                    </span>
+                                  )}
                                   <span className="caps mt-1 block text-[0.56rem] text-taupe">
                                     {t.category}
                                     {t.due && <span className={late ? "text-rosegold-deep" : ""}> · {late ? "overdue · " : ""}{prettyDate(t.due, { day: "numeric", month: "short" })}</span>}
@@ -94,7 +101,7 @@ export default function PlanBoard({ plan, onToggle }: { plan: Plan; onToggle: (i
                     })}
                   </ul>
                 </div>
-              ) : <Empty line="Say your budget in naira and I'll split it across the big costs." />
+              ) : <Empty line="Tell me your budget and I'll split it across the big costs." />
             )}
 
             {tab === "The day" && (
@@ -133,6 +140,23 @@ export default function PlanBoard({ plan, onToggle }: { plan: Plan; onToggle: (i
         </AnimatePresence>
       </div>
     </section>
+  );
+}
+
+function CopyLink() {
+  const [ok, setOk] = useState(false);
+  return (
+    <button
+      type="button"
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        void navigator.clipboard?.writeText(`${location.origin}/rsvp`).then(() => { setOk(true); setTimeout(() => setOk(false), 1800); });
+      }}
+      className="caps text-[0.56rem] text-cocoa-soft underline-offset-4 hover:underline"
+    >
+      {ok ? "Link copied" : "Copy link for WhatsApp"}
+    </button>
   );
 }
 

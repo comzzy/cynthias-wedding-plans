@@ -29,8 +29,13 @@ const jobs = [
   ["/planner", 1280, "planner-desktop-1280-budget", { filled: true, tab: "Budget" }],
   ["/planner", 390, "planner-mobile-390-empty", {}],
   ["/planner", 390, "planner-mobile-390-filled-full", { filled: true, full: true }],
+  ["/rsvp", 1280, "rsvp-desktop-1280", {}],
   ["/rsvp", 390, "rsvp-mobile-390", {}],
+  ["/rsvp/list", 1280, "rsvp-list-desktop-1280", { full: true }],
+  ["/rsvp/list", 390, "rsvp-list-mobile-390-full", { full: true }],
   ["/guestbook", 1280, "guestbook-desktop-1280", {}],
+  ["/guestbook", 1280, "guestbook-desktop-1280-full", { full: true }],
+  ["/guestbook", 390, "guestbook-mobile-390-full", { full: true }],
 ];
 for (const [path, w, name, o] of jobs) if (!only || name.includes(only)) await shot(path, w, name, o);
 await b.close();

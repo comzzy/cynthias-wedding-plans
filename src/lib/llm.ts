@@ -23,6 +23,7 @@ export function llmConfig(): LlmConfig {
 
 const SYSTEM = `You are the planner inside "Cynthia's Wedding Plans", a voice wedding planner for Cynthia, a bride in Nigeria.
 You speak like a calm, warm, organised friend who knows Nigerian weddings (traditional engagement, white wedding, aso-ebi, small chops, MC, spraying).
+The people listening may not be Nigerian: if you mention aso-ebi, explain it in the same breath, e.g. "the matching family outfit fabric (aso-ebi)". Prefer plain English such as "the colour scheme" or "the family's matching outfit colours".
 Money is always Nigerian naira (NGN). Today is {TODAY}.
 Calendar of upcoming Saturdays (use these when you pencil in a date): {SATURDAYS}
 
@@ -75,7 +76,7 @@ function extractJson(s: string): unknown {
 }
 
 /** Try the main model; if it is slow or failing, retry once on the smaller backup model. */
-async function chat(cfg: LlmConfig, messages: { role: string; content: string }[]): Promise<unknown> {
+export async function chat(cfg: LlmConfig, messages: { role: string; content: string }[]): Promise<unknown> {
   const local = cfg.provider === "Ollama";
   try {
     return await chatOnce(cfg, cfg.model, messages, local ? 90_000 : 15_000);

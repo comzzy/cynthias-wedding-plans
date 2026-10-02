@@ -59,7 +59,8 @@ export async function startRecording(): Promise<Recording> {
           cleanup();
           resolve(new Blob(chunks, { type: rec.mimeType || mime || "audio/webm" }));
         };
-        rec.state !== "inactive" ? rec.stop() : rec.onstop?.(new Event("stop"));
+        if (rec.state !== "inactive") rec.stop();
+        else rec.onstop?.(new Event("stop"));
       }),
     cancel: () => {
       try { rec.stop(); } catch {}

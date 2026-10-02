@@ -9,7 +9,7 @@ const PARTS = [
     n: "I",
     title: "The Planner",
     line: "Talk, and the plan writes itself.",
-    body: "Say the budget, the guest count, the city and the month. It builds the checklist with due dates, splits the naira, drafts the order of the day and keeps track of every vendor. Then it answers you out loud.",
+    body: "Say the budget, the guest count, the city and the month. It builds the checklist with due dates, splits the budget, drafts the order of the day and keeps track of every vendor. Then it answers you out loud.",
     href: "/planner",
     live: true,
   },
@@ -19,7 +19,7 @@ const PARTS = [
     line: "For the aunties who won't fill a form.",
     body: "Guests open a link and simply say who's coming, how many, and what they can't eat. Every answer lands neatly in Cynthia's guest list.",
     href: "/rsvp",
-    live: false,
+    live: true,
   },
   {
     n: "III",
@@ -27,13 +27,13 @@ const PARTS = [
     line: "Their wishes, in their own voices.",
     body: "Friends and family leave a spoken blessing, a piece of advice or a funny story. It becomes a keepsake page the couple can play back for years.",
     href: "/guestbook",
-    live: false,
+    live: true,
   },
 ];
 
 const STEPS = [
-  ["You speak", "Tap the mic and talk the way you'd tell your sister. Lagos traffic, aso-ebi colours and all."],
-  ["It listens", "ElevenLabs Scribe turns your voice into words, Nigerian names and naira included."],
+  ["You speak", "Tap the mic and talk the way you'd tell your sister. Lagos traffic, the family outfit colours and all."],
+  ["It listens", "ElevenLabs Scribe turns your voice into words, Nigerian names and all."],
   ["It plans", "An open-weight model reads the words and updates the checklist, budget, timeline and vendors."],
   ["It answers", "A warm ElevenLabs voice tells you what changed and what to do next."],
 ];
@@ -49,7 +49,7 @@ export default function Home() {
           <Bloom className="pointer-events-none absolute -left-[16%] -top-[6%] z-20 w-[58%] sm:-left-[30%] sm:-top-[9%] sm:w-[72%]" delay={0.6}>
             <BouquetTopLeft id="hero-tl" className="h-auto w-full drop-shadow-[0_8px_14px_rgba(110,76,68,0.12)]" />
           </Bloom>
-          <Bloom className="pointer-events-none absolute -bottom-[7%] -right-[16%] z-20 w-[56%] sm:-bottom-[10%] sm:-right-[30%] sm:w-[70%]" delay={0.9} from="right">
+          <Bloom className="pointer-events-none absolute -bottom-[9%] -right-[16%] z-20 w-[56%] sm:-bottom-[20%] sm:-right-[36%] sm:w-[68%]" delay={0.9} from="right">
             <BouquetBottomRight id="hero-br" className="h-auto w-full drop-shadow-[0_8px_14px_rgba(110,76,68,0.12)]" />
           </Bloom>
 
@@ -70,7 +70,7 @@ export default function Home() {
               </Reveal>
               <Reveal delay={1.5}>
                 <p className="mx-auto mt-6 max-w-sm font-display text-xl leading-snug text-cocoa-soft sm:text-[1.35rem]">
-                  Tell it the budget, the guest count, the aso-ebi colour you can&rsquo;t stop thinking about. It keeps the list, the naira and the countdown, and talks back.
+                  Tell it the budget, the guest count, the colour scheme you can&rsquo;t stop thinking about. It keeps the list, the budget and the countdown, and talks back.
                 </p>
               </Reveal>
               <Reveal delay={1.7}>
@@ -145,13 +145,22 @@ export default function Home() {
       </section>
 
       {/* NOTE */}
-      <section className="mx-auto max-w-3xl px-5 py-16 text-center sm:px-8 sm:py-24">
-        <Reveal>
-          <p className="font-script text-5xl text-rosegold-deep sm:text-6xl">Dear Cynthia,</p>
-          <p className="mx-auto mt-6 max-w-xl font-display text-xl leading-relaxed text-cocoa-soft sm:text-2xl">
-            Between the vendors, the family meetings and the group chats, I wanted you to have one calm place to put it all. Just talk to it on the way home, and it will remember for you.
-          </p>
-          <p className="caps mt-8 text-xs text-cocoa">With love, Kane</p>
+      <section className="mx-auto max-w-3xl px-5 py-16 sm:px-8 sm:py-24">
+        <Reveal className="paper relative mx-auto max-w-2xl rounded-sm px-7 py-12 sm:px-14 sm:py-16">
+          <Sprig className="mx-auto h-10 w-20" />
+          <p className="mt-4 text-center font-script text-5xl text-rosegold-deep sm:text-6xl">Cynthia,</p>
+          <div className="mt-7 space-y-5 font-display text-xl leading-relaxed text-cocoa-soft sm:text-[1.4rem]">
+            <p>
+              Since the day you said yes, your head has been full of venues, guest lists, aso-ebi colours and a hundred little decisions. I couldn&rsquo;t plan your wedding for you, but I could build something that carries the weight with you.
+            </p>
+            <p>
+              So this is my wedding gift: a planner that listens. Tell it what&rsquo;s on your mind, and it keeps the list, minds the budget, counts down the days and talks you through what&rsquo;s next, so you can spend less time worrying and more time enjoying every moment before you walk down that aisle.
+            </p>
+          </div>
+          <div className="mt-9 text-right">
+            <p className="font-display text-lg italic text-cocoa">With all my love, your best friend,</p>
+            <p className="font-script text-4xl text-rosegold-deep">Kane</p>
+          </div>
         </Reveal>
       </section>
 

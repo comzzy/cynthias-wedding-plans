@@ -1,5 +1,6 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import MicButton, { type MicState } from "./MicButton";
 import PlanBoard from "./PlanBoard";
@@ -16,9 +17,9 @@ const VOICE = "cwp.voice.v1";
 const MAX_RECORD_MS = 45_000;
 
 const SUGGESTIONS = [
-  "Budget is 5 million naira, about 200 guests, Lagos, this December",
+  "Budget is ₦5 million, about 200 guests, Lagos, this December",
   "We booked the venue in Lekki today",
-  "The caterer quoted 1.4 million for jollof and small chops",
+  "The caterer quoted ₦1.4 million for jollof and small chops",
 ];
 
 type Status = { llm: { provider: string; model: string; keySet: boolean; reachable: boolean }; voice: { ready: boolean } };
@@ -275,6 +276,17 @@ export default function Planner() {
             )}
           </div>
           <PlanBoard plan={plan} onToggle={(id) => setPlan((p) => ({ ...p, tasks: p.tasks.map((t) => (t.id === id ? { ...t, done: !t.done } : t)) }))} />
+
+          <div className="mt-6 grid gap-3 sm:grid-cols-2">
+            <Link href="/rsvp/list" className="paper group flex items-center justify-between rounded-sm px-5 py-4 transition-colors hover:bg-white/70">
+              <span><span className="caps block text-[0.55rem] text-cocoa-soft">Part II</span><span className="font-display text-xl text-cocoa">The guest list</span></span>
+              <span className="text-rosegold-deep transition-transform group-hover:translate-x-1">→</span>
+            </Link>
+            <Link href="/guestbook" className="paper group flex items-center justify-between rounded-sm px-5 py-4 transition-colors hover:bg-white/70">
+              <span><span className="caps block text-[0.55rem] text-cocoa-soft">Part III</span><span className="font-display text-xl text-cocoa">The keepsake</span></span>
+              <span className="text-rosegold-deep transition-transform group-hover:translate-x-1">→</span>
+            </Link>
+          </div>
 
           {chat.length > 2 && (
             <details className="paper mt-6 rounded-sm px-5 py-4">

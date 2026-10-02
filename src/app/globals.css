@@ -17,14 +17,14 @@
   --font-sans: "Jost", system-ui, sans-serif;
 }
 
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: clip; }
 body {
   background: var(--color-ivory);
   color: var(--color-cocoa);
   font-family: "Jost", system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   font-variant-numeric: lining-nums;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 ::selection { background: #e9cdbd; color: var(--color-cocoa); }
 
@@ -108,4 +108,18 @@ body {
   *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
   .petal { display: none; }
   html { scroll-behavior: auto; }
+}
+
+@layer components {
+  .input {
+    width: 100%;
+    border-radius: 2px;
+    border: 1px solid rgba(196, 146, 122, 0.45);
+    background: rgba(255, 255, 255, 0.6);
+    padding: 0.7rem 1rem;
+    font-size: 1rem;
+    color: var(--color-cocoa);
+  }
+  .input::placeholder { color: var(--color-taupe); }
+  .input:focus { outline: none; box-shadow: 0 0 0 3px rgba(196, 146, 122, 0.25); }
 }

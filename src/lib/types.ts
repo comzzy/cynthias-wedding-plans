@@ -3,7 +3,7 @@ export type Facts = {
   guests: number | null;
   city: string | null;
   date: string | null; // YYYY-MM-DD
-  style: string | null; // colours, theme, aso-ebi notes
+  style: string | null; // colours, theme, family outfit notes
 };
 
 export type Task = {
