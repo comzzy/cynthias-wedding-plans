@@ -1,0 +1,111 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-ivory: #f5f1eb;
+  --color-cream: #efe9e2;
+  --color-card: #f1ede8;
+  --color-sand: #e2d4c6;
+  --color-taupe: #c8b5a3;
+  --color-rosegold: #c4927a;
+  --color-rosegold-deep: #a8735d;
+  --color-cocoa: #4a2e29;
+  --color-cocoa-soft: #6e4c44;
+  --color-sage: #9aa982;
+  --color-sage-deep: #6f7d5a;
+  --font-display: "Cormorant Garamond", Georgia, serif;
+  --font-script: "Great Vibes", cursive;
+  --font-sans: "Jost", system-ui, sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--color-ivory);
+  color: var(--color-cocoa);
+  font-family: "Jost", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  font-variant-numeric: lining-nums;
+  overflow-x: hidden;
+}
+::selection { background: #e9cdbd; color: var(--color-cocoa); }
+
+@layer components {
+.caps { text-transform: uppercase; letter-spacing: 0.28em; font-weight: 400; }
+
+/* The arched card from the invitation: flattened elliptical arch + hairline rose-gold border */
+.arch {
+  border-radius: 50% 50% 6px 6px / min(220px, 34vw) min(220px, 34vw) 6px 6px;
+  background: linear-gradient(180deg, rgba(243, 240, 236, 0.97), rgba(239, 235, 230, 0.97));
+  border: 1.5px solid #d4a993;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.8) inset,
+    0 30px 60px -30px rgba(110, 76, 68, 0.35),
+    0 8px 20px -12px rgba(110, 76, 68, 0.25);
+}
+.arch-sm { border-radius: 50% 50% 4px 4px / 120px 120px 4px 4px; }
+
+.gold-text {
+  background: linear-gradient(100deg, #a8735d 0%, #d9a98f 30%, #f3d9c6 45%, #c4927a 60%, #a8735d 100%);
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: goldsweep 7s ease-in-out infinite;
+}
+@keyframes goldsweep { 0%, 100% { background-position: 100% 0; } 50% { background-position: 0 0; } }
+
+/* Gold veins in the marble */
+.vein-glint { stroke-dasharray: 1.5 9; animation: veinflow 9s linear infinite; }
+@keyframes veinflow { to { stroke-dashoffset: -210; } }
+.sparkle { animation: twinkle 3.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes twinkle { 0%, 100% { opacity: 0.15; transform: scale(0.6); } 50% { opacity: 1; transform: scale(1.15); } }
+
+/* Botanicals breathe in the breeze */
+.sway { animation: sway 9s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 100%; }
+.sway-slow { animation: sway 13s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 100%; }
+@keyframes sway { 0%, 100% { transform: rotate(-1.4deg); } 50% { transform: rotate(1.6deg); } }
+
+/* Falling petals and leaves */
+.petal { position: absolute; top: -8vh; animation: fall linear infinite; will-change: transform; }
+@keyframes fall {
+  0% { transform: translate3d(0, 0, 0) rotate(0deg); opacity: 0; }
+  8% { opacity: 0.9; }
+  50% { transform: translate3d(var(--drift, 40px), 55vh, 0) rotate(200deg); }
+  92% { opacity: 0.8; }
+  100% { transform: translate3d(calc(var(--drift, 40px) * -0.6), 112vh, 0) rotate(380deg); opacity: 0; }
+}
+
+.ink-drift { animation: inkdrift 40s ease-in-out infinite alternate; }
+@keyframes inkdrift { from { transform: scale(1.05) translate(0, 0); } to { transform: scale(1.12) translate(-2%, 1.5%); } }
+
+.btn-gold {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #b98069, #d8a98f 55%, #b98069);
+  color: #fffaf6;
+  box-shadow: 0 10px 24px -12px rgba(168, 115, 93, 0.9);
+}
+.btn-gold::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.45) 50%, transparent 70%);
+  transform: translateX(-120%);
+  animation: shine 5s ease-in-out infinite;
+}
+@keyframes shine { 0%, 60% { transform: translateX(-120%); } 85%, 100% { transform: translateX(120%); } }
+
+.hairline { border-color: rgba(196, 146, 122, 0.45); }
+.paper {
+  background: rgba(246, 243, 239, 0.86);
+  border: 1px solid rgba(196, 146, 122, 0.35);
+  backdrop-filter: blur(6px);
+}
+
+.thin-scroll { scrollbar-width: thin; scrollbar-color: #d4b5a3 transparent; }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+  .petal { display: none; }
+  html { scroll-behavior: auto; }
+}
