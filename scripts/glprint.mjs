@@ -1,0 +1,10 @@
+import { chromium } from "playwright-core";
+import fs from "node:fs";
+const KEY = fs.readFileSync("/workspace/cynthias-wedding-plans/.host-key", "utf8").trim();
+const BASE = process.argv[2] || "https://cynthias-wedding.vercel.app";
+const b = await chromium.launch({ executablePath: "/usr/bin/google-chrome" });
+const p = await (await b.newContext({ viewport: { width: 390, height: 844 } })).newPage();
+await p.goto(BASE + "/rsvp/list?key=" + encodeURIComponent(KEY), { waitUntil: "networkidle" }); await p.waitForTimeout(2500);
+await p.emulateMedia({ media: "print" });
+console.log("print, unscrolled:", await p.evaluate(() => [...document.querySelectorAll("main p")].filter((e) => /^(Temp Check|Live Test)/.test(e.textContent)).map((e) => { let o = 1, el = e; while (el) { o *= +getComputedStyle(el).opacity; el = el.parentElement; } return e.textContent + "=" + o.toFixed(2); }).join(", ")));
+await b.close();

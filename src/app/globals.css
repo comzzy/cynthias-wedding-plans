@@ -142,3 +142,15 @@ body {
   .input::placeholder { color: var(--color-taupe); }
   .input:focus { outline: none; box-shadow: 0 0 0 3px rgba(196, 146, 122, 0.25); }
 }
+
+/* Printing (e.g. the guest list for the caterer): show everything, even sections
+   whose scroll-in animation never ran because they were never scrolled into view. */
+@media print {
+  [style*="opacity"], .stagger > * {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+    filter: none !important;
+    animation: none !important;
+  }
+}
