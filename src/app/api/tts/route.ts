@@ -1,8 +1,9 @@
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-// "Sarah - Mature, Reassuring, Confident" (premade). Override with ELEVENLABS_VOICE_ID.
-const DEFAULT_VOICE = "EXAVITQu4vr4xnSDxMaL";
+// "Cynthia Planner": a young Lagos voice Kane made with ElevenLabs Voice Design (it lives in his account).
+// Override with ELEVENLABS_VOICE_ID, e.g. Sarah "EXAVITQu4vr4xnSDxMaL" when using a different ElevenLabs account.
+const DEFAULT_VOICE = "d1mhDFQkbY1BH9rC0OZr";
 const MAX_CHARS = 420; // keeps every reply short and the credits safe
 
 export async function POST(req: Request) {

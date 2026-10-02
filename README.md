@@ -47,10 +47,12 @@ and it falls back to `gpt-oss-20b` if that's slow. Any OpenAI-compatible endpoin
 ## How ElevenLabs is used
 
 - **Speech-to-text (Scribe, `scribe_v1`)** for all three parts: Cynthia's planner notes, guests' RSVPs and guestbook wishes.
-- **Text-to-speech (`eleven_flash_v2_5`, the "Sarah" voice)** for the planner's spoken replies and the daily briefing.
+- **Voice Design** for the voice itself. I described a young woman from Lagos with a natural Nigerian English accent, warm and calm, like a best friend helping plan a wedding, and saved it as "Cynthia Planner". The planner should sound like someone from home.
+- **Text-to-speech (`eleven_flash_v2_5`)** in that voice for the planner's spoken replies and the daily briefing.
 - **A spoken thank-you** for each guest after they RSVP, using their name.
+- **The note on the home page, read aloud.** It was generated once with `eleven_multilingual_v2` (`scripts/make-letter-audio.mjs`) and saved as a static mp3, so playing it costs nothing.
 
-The keys stay on the server. The browser only talks to the app's own `/api` routes. Building and testing all of this used about 310 credits.
+The keys stay on the server. The browser only talks to the app's own `/api` routes. The designed voice belongs to my ElevenLabs account, so if you run this with your own key, set `ELEVENLABS_VOICE_ID` to one of your voices.
 
 ## Run it yourself
 
