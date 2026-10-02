@@ -36,7 +36,7 @@ export async function POST(req: Request) {
   }
   if (text.length < 3) return NextResponse.json({ error: "Say or write a few words for the couple." }, { status: 400 });
 
-  const tagged = await tagWish(text);
+  const tagged = await tagWish(text, { spoken: hasAudio });
   const id = newId();
   const wish: Wish = {
     id, name, theme: tagged.theme, title: tagged.title, text: tagged.text,

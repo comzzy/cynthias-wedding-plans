@@ -1,7 +1,7 @@
 import "server-only";
 import { promises as fs } from "node:fs";
 import path from "node:path";
-import { get, list, put } from "@vercel/blob";
+import { del, get, list, put } from "@vercel/blob";
 import type { Rsvp, Wish } from "./guests";
 
 /**
@@ -18,6 +18,8 @@ interface Store {
   listRecords<T>(kind: Kind): Promise<T[]>;
   putAudio(id: string, data: ArrayBuffer, contentType: string): Promise<void>;
   getAudio(id: string): Promise<{ body: ReadableStream<Uint8Array> | Buffer; contentType: string } | null>;
+  /** Removes a record and, for wishes, its recording. */
+  deleteRecord(kind: Kind, id: string): Promise<boolean>;
 }
 
 const audioExt = (ct: string) => (ct.includes("mp4") ? "m4a" : ct.includes("ogg") ? "ogg" : ct.includes("mpeg") ? "mp3" : ct.includes("wav") ? "wav" : "webm");
@@ -66,6 +68,14 @@ class BlobStore implements Store {
     if (!g || g.statusCode !== 200) return null;
     return { body: g.stream, contentType: g.blob.contentType };
   }
+  async deleteRecord(kind: Kind, id: string) {
+    if (!SAFE_ID.test(id)) return false;
+    const rec = await list({ prefix: `${kind}/${id}.json`, limit: 1 });
+    const audio = kind === "wishes" ? (await list({ prefix: `audio/${id}.`, limit: 5 })).blobs : [];
+    const urls = [...rec.blobs, ...audio].map((b) => b.url);
+    if (urls.length) await del(urls);
+    return rec.blobs.length > 0;
+  }
 }
 
 class FileStore implements Store {
@@ -98,6 +108,16 @@ class FileStore implements Store {
     if (!ct) return null;
     const body = await fs.readFile(path.join(d, `${id}.${audioExt(ct)}`)).catch(() => null);
     return body ? { body, contentType: ct } : null;
+  }
+  async deleteRecord(kind: Kind, id: string) {
+    if (!SAFE_ID.test(id)) return false;
+    const f = path.join(this.dir, kind, `${id}.json`);
+    const existed = await fs.rm(f).then(() => true, () => false);
+    if (kind === "wishes") {
+      const d = path.join(this.dir, "audio");
+      for (const x of await fs.readdir(d).catch(() => [] as string[])) if (x.startsWith(`${id}.`)) await fs.rm(path.join(d, x)).catch(() => {});
+    }
+    return existed;
   }
 }
 

@@ -105,7 +105,19 @@ export function fallbackTheme(text: string): Theme {
   return "advice";
 }
 
-export async function tagWish(text: string): Promise<{ theme: Theme; title: string; text: string; source: "llm" | "fallback" }> {
+const words = (s: string) => s.toLowerCase().normalize("NFKD").replace(/[^a-z0-9\s']/g, " ").split(/\s+/).filter(Boolean);
+/** True when `b` keeps at least 80% of the words in `a` (a punctuation tidy-up, not a rewrite). */
+function sameWords(a: string, b: string) {
+  const want = words(a), have = new Set(words(b));
+  if (!want.length) return false;
+  return want.filter((w) => have.has(w)).length / want.length >= 0.8 && words(b).length <= want.length * 1.25 + 2;
+}
+
+/**
+ * Tags a wish with a theme and short heading. The guest's words are never rewritten:
+ * written wishes keep their exact text; for voice transcripts the model may only fix punctuation.
+ */
+export async function tagWish(text: string, opts: { spoken?: boolean } = {}): Promise<{ theme: Theme; title: string; text: string; source: "llm" | "fallback" }> {
   try {
     const out = (await chat(llmConfig(), [
       { role: "system", content: WISH_SYSTEM },
@@ -116,8 +128,7 @@ export async function tagWish(text: string): Promise<{ theme: Theme; title: stri
     return {
       theme,
       title: clean(out.title, 60).replace(/^["']|["']$/g, "") || "A wish for you",
-      // keep the model's tidy version only if it didn't drift far from what was said
-      text: cleaned && cleaned.length >= text.length * 0.85 ? cleaned : text,
+      text: opts.spoken && cleaned && sameWords(text, cleaned) ? cleaned : text,
       source: "llm",
     };
   } catch (e) {
