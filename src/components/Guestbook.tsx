@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import MicButton, { type MicState } from "./MicButton";
 import Flourish from "./Flourish";
@@ -21,6 +21,8 @@ export default function Guestbook({ initial, host }: { initial: Wish[]; host: bo
   const [text, setText] = useState("");
   const [justAdded, setJustAdded] = useState<Wish | null>(null);
   const [filter, setFilter] = useState<Theme | "all">("all");
+  const [draft, setDraft] = useState<{ blob: Blob; secs: number; url: string } | null>(null);
+  useEffect(() => () => { if (draft) URL.revokeObjectURL(draft.url); }, [draft]);
 
   const submit = useCallback(async (form: FormData) => {
     setBusy(true);
@@ -34,6 +36,7 @@ export default function Guestbook({ initial, host }: { initial: Wish[]; host: bo
       setJustAdded(d.wish);
       setText("");
       setWriting(false);
+      setDraft(null);
     } catch (e) {
       setError((e as Error).message || "Something went wrong. Try again?");
     } finally {
@@ -43,17 +46,31 @@ export default function Guestbook({ initial, host }: { initial: Wish[]; host: bo
 
   const onRecorded = useCallback((blob: Blob, secs: number) => {
     if (blob.size < 2000 || secs < 1.2) return setError("That was very short. Tap, speak your wish, then tap again.");
+    setDraft({ blob, secs, url: URL.createObjectURL(blob) });
+  }, []);
+
+  const sendVoice = () => {
+    if (!draft || busy) return;
     const f = new FormData();
-    f.append("audio", blob, "wish.webm");
-    f.append("duration", String(Math.round(secs)));
+    f.append("audio", draft.blob, "wish.webm");
+    f.append("duration", String(Math.round(draft.secs)));
     void submit(f);
-  }, [submit]);
+  };
+  const sendText = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (busy || text.trim().length < 3) return;
+    const f = new FormData();
+    f.append("text", text.trim());
+    void submit(f);
+  };
+  const another = () => { setJustAdded(null); setError(null); setDraft(null); setWriting(false); };
 
   const rec = useRecorder(CAP_MS, onRecorded);
   const onMic = async () => {
     setError(null);
     setJustAdded(null);
     if (rec.listening) return rec.stop();
+    setDraft(null);
     try { await rec.start(); } catch { setError("We need the microphone for a voice wish. You can also write one."); }
   };
 
@@ -90,36 +107,63 @@ export default function Guestbook({ initial, host }: { initial: Wish[]; host: bo
                   <label htmlFor="wname" className="caps mb-2 block text-[0.58rem] text-cocoa-soft">Your name</label>
                   <input id="wname" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Uncle Emeka" className="input text-center" maxLength={60} />
                 </div>
-                <div className="mt-2">
-                  <MicButton state={state} analyser={rec.analyser} onClick={onMic} disabled={busy} progress={rec.listening ? rec.elapsed / CAP_MS : 0} idleLabel="Tap to record your wish" />
-                </div>
-                <p className="caps -mt-2 text-[0.6rem] text-cocoa-soft" aria-live="polite">
-                  {rec.listening ? `Recording · ${left}s left · tap to finish` : busy ? "Writing your words into the book…" : "Tap to record"}
-                </p>
-        
-                <AnimatePresence>
-                  {justAdded && (
-                    <motion.div initial={{ opacity: 0, y: 12, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.7, ease }} className="paper mx-auto mt-6 max-w-sm rounded-sm px-5 py-4 text-left">
-                      <p className="caps text-[0.55rem] text-sage-deep">Added to {THEME_LABEL[justAdded.theme].title.toLowerCase()}</p>
-                      <p className="mt-1 font-display text-lg italic leading-snug text-cocoa">&ldquo;{justAdded.text}&rdquo;</p>
+                <AnimatePresence mode="wait">
+                  {justAdded ? (
+                    <motion.div key="sent" initial={{ opacity: 0, y: 14, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.7, ease }} className="mx-auto mt-8 max-w-sm" role="status">
+                      <motion.svg viewBox="0 0 52 52" className="mx-auto h-14 w-14" fill="none" aria-hidden>
+                        <motion.circle cx="26" cy="26" r="24" stroke="#c4927a" strokeWidth="1.5" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.9, ease }} />
+                        <motion.path d="M16 27 l7 7 l13 -15" stroke="#a8735d" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.5, delay: 0.7, ease }} />
+                      </motion.svg>
+                      <p className="mt-4 font-script text-4xl leading-none text-rosegold-deep">Sent</p>
+                      <p className="mt-2 font-display text-xl text-cocoa">Cynthia will see your wish.</p>
+                      <div className="paper mt-5 rounded-sm px-5 py-4 text-left">
+                        <p className="caps text-[0.55rem] text-sage-deep">In {THEME_LABEL[justAdded.theme].title.toLowerCase()}</p>
+                        <p className="mt-1 font-display text-lg italic leading-snug text-cocoa">&ldquo;{justAdded.text}&rdquo;</p>
+                      </div>
+                      <button type="button" onClick={another} className="caps mt-6 rounded-full border border-rosegold/60 px-6 py-3 text-[0.6rem] text-rosegold-deep transition-colors hover:bg-white/60">Leave another wish</button>
+                    </motion.div>
+                  ) : (
+                    <motion.div key="compose" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                      {!writing && (
+                        <>
+                          <div className="mt-2">
+                            <MicButton state={state} analyser={rec.analyser} onClick={onMic} disabled={busy} progress={rec.listening ? rec.elapsed / CAP_MS : 0} idleLabel={draft ? "Tap to record again" : "Tap to record your wish"} stopLabel="Finish recording" />
+                          </div>
+                          <p className="caps -mt-2 text-[0.6rem] text-cocoa-soft" aria-live="polite">
+                            {rec.listening ? `Recording · ${left}s left · tap to finish` : busy ? "Sending your wish…" : draft ? "Listen back, then send it" : "Tap to record"}
+                          </p>
+                          <AnimatePresence>
+                            {draft && !rec.listening && (
+                              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.5, ease }} className="paper mx-auto mt-5 max-w-sm rounded-sm px-4 py-4">
+                                <p className="caps text-[0.55rem] text-cocoa-soft">Your wish · {Math.round(draft.secs)}s</p>
+                                <audio controls src={draft.url} className="mt-2 w-full" />
+                                <div className="mt-4 flex flex-col items-center gap-3">
+                                  <SendButton busy={busy} onClick={sendVoice} />
+                                  <button type="button" onClick={() => setDraft(null)} disabled={busy} className="caps text-[0.56rem] text-taupe hover:text-cocoa disabled:opacity-50">Discard</button>
+                                </div>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </>
+                      )}
+                      {error && <p role="alert" className="mx-auto mt-4 max-w-sm rounded-sm border border-rosegold/40 bg-white/50 px-4 py-2.5 text-sm text-rosegold-deep">{error}{(draft || (writing && text.trim())) && " Tap Send wish to try again."}</p>}
+                      <div className="mt-6">
+                        {!writing ? (
+                          !draft && !rec.listening && <button onClick={() => { setWriting(true); setError(null); }} className="caps text-[0.6rem] text-cocoa-soft underline decoration-rosegold/50 underline-offset-8 hover:text-cocoa">Prefer to write it?</button>
+                        ) : (
+                          <motion.form initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} onSubmit={sendText} className="mx-auto max-w-md overflow-hidden text-left">
+                            <label htmlFor="wtext" className="caps mb-2 block text-center text-[0.58rem] text-cocoa-soft">Your wish</label>
+                            <textarea id="wtext" value={text} onChange={(e) => setText(e.target.value)} rows={4} maxLength={1200} placeholder="Write your wish for the couple…" className="input resize-none" />
+                            <div className="mt-4 flex flex-col items-center gap-3">
+                              <SendButton busy={busy} disabled={text.trim().length < 3} />
+                              <button type="button" onClick={() => { setWriting(false); setError(null); }} disabled={busy} className="caps text-[0.56rem] text-taupe hover:text-cocoa disabled:opacity-50">Record instead</button>
+                            </div>
+                          </motion.form>
+                        )}
+                      </div>
                     </motion.div>
                   )}
                 </AnimatePresence>
-                {error && <p role="alert" className="mx-auto mt-4 max-w-sm text-sm text-rosegold-deep">{error}</p>}
-        
-                <div className="mt-6">
-                  {!writing ? (
-                    <button onClick={() => setWriting(true)} className="caps text-[0.6rem] text-cocoa-soft underline decoration-rosegold/50 underline-offset-8 hover:text-cocoa">Prefer to write it?</button>
-                  ) : (
-                    <motion.form initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} onSubmit={(e) => { e.preventDefault(); if (text.trim().length < 3) return; const f = new FormData(); f.append("text", text.trim()); void submit(f); }} className="mx-auto max-w-md overflow-hidden text-left">
-                      <label htmlFor="wtext" className="sr-only">Your wish</label>
-                      <textarea id="wtext" value={text} onChange={(e) => setText(e.target.value)} rows={3} maxLength={1200} placeholder="Write your wish for the couple…" className="input resize-none" />
-                      <div className="mt-3 text-center">
-                        <button disabled={busy || text.trim().length < 3} className="btn-gold caps rounded-full px-7 py-3 text-[0.62rem] disabled:opacity-50">Add to the book</button>
-                      </div>
-                    </motion.form>
-                  )}
-                </div>
               </div>
         
             </div>
@@ -190,5 +234,23 @@ export default function Guestbook({ initial, host }: { initial: Wish[]; host: bo
         )}
       </section>
     </>
+  );
+}
+
+function SendButton({ busy, disabled, onClick }: { busy: boolean; disabled?: boolean; onClick?: () => void }) {
+  return (
+    <button type={onClick ? "button" : "submit"} onClick={onClick} disabled={busy || disabled} aria-busy={busy} className="btn-gold caps inline-flex min-w-[200px] items-center justify-center gap-2.5 rounded-full px-8 py-3.5 text-[0.66rem] disabled:opacity-60">
+      {busy ? (
+        <>
+          <svg viewBox="0 0 24 24" className="h-4 w-4 animate-spin" fill="none" aria-hidden><circle cx="12" cy="12" r="9" stroke="currentColor" strokeOpacity=".35" strokeWidth="2" /><path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
+          Sending…
+        </>
+      ) : (
+        <>
+          <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M2.5 8.2 13.5 3l-3.8 10.5-2.2-4.3z" /></svg>
+          Send wish
+        </>
+      )}
+    </button>
   );
 }

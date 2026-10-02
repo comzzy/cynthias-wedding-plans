@@ -5,7 +5,7 @@ import { motion, useReducedMotion } from "framer-motion";
 export type MicState = "idle" | "listening" | "transcribing" | "thinking" | "speaking";
 
 /** Round mic button with a living ring of bars: the mic level while listening, the voice while speaking. */
-export default function MicButton({ state, analyser, onClick, disabled, progress = 0, idleLabel = "Tap to talk to your planner" }: { state: MicState; analyser: AnalyserNode | null; onClick: () => void; disabled?: boolean; progress?: number; idleLabel?: string }) {
+export default function MicButton({ state, analyser, onClick, disabled, progress = 0, idleLabel = "Tap to talk to your planner", stopLabel = "Stop and send" }: { state: MicState; analyser: AnalyserNode | null; onClick: () => void; disabled?: boolean; progress?: number; idleLabel?: string; stopLabel?: string }) {
   const canvas = useRef<HTMLCanvasElement>(null);
   const reduce = useReducedMotion();
   const stateRef = useRef(state);
@@ -76,7 +76,7 @@ export default function MicButton({ state, analyser, onClick, disabled, progress
 
   const active = state === "listening" || state === "speaking";
   const label =
-    state === "listening" ? "Stop and send" : state === "speaking" ? "Stop speaking" : state === "idle" ? idleLabel : "Working";
+    state === "listening" ? stopLabel : state === "speaking" ? "Stop speaking" : state === "idle" ? idleLabel : "Working";
 
   return (
     <div className="relative mx-auto h-[260px] w-[260px]">
