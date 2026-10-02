@@ -23,7 +23,6 @@ const SUGGESTIONS = [
   "The caterer quoted ₦1.4 million for jollof and small chops",
 ];
 
-type Status = { llm: { provider: string; model: string; keySet: boolean; reachable: boolean }; voice: { ready: boolean } };
 
 export default function Planner() {
   const [plan, setPlan] = useState<Plan>(emptyPlan);
@@ -33,8 +32,6 @@ export default function Planner() {
   const [text, setText] = useState("");
   const [voiceOn, setVoiceOn] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [status, setStatus] = useState<Status | null>(null);
-  const [source, setSource] = useState<PlanResponse["source"] | null>(null);
   const [loaded, setLoaded] = useState(false);
   const rec = useRef<Recording | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -53,7 +50,6 @@ export default function Planner() {
       if (v) setVoiceOn(v === "1");
     } catch {}
     setLoaded(true);
-    fetch("/api/status").then((r) => r.json()).then(setStatus).catch(() => {});
   }, []);
   useEffect(() => {
     if (!loaded) return;
@@ -89,7 +85,6 @@ export default function Planner() {
       const data = (await r.json()) as PlanResponse & { error?: string };
       if (!r.ok) throw new Error(data.error || "Something went wrong");
       setPlan(data.plan);
-      setSource(data.source);
       setChat((c) => [...c, { role: "assistant", text: data.reply }]);
       await say(data.reply);
     } catch (e) {
@@ -151,7 +146,6 @@ export default function Planner() {
     if (!confirm("Start the plan again from scratch? This clears the checklist, budget and notes on this device.")) return;
     setPlan(emptyPlan());
     setChat([]);
-    setSource(null);
   };
 
   const f = plan.facts;
@@ -166,12 +160,6 @@ export default function Planner() {
     thinking: "Updating your plan…",
     speaking: "Speaking. Tap to stop",
   }[state];
-
-  const brain = status
-    ? status.llm.reachable && (status.llm.keySet || status.llm.provider === "Ollama")
-      ? `Planning with ${status.llm.model.replace(/^.*\//, "")}, an open-weight model via ${status.llm.provider}`
-      : "No planning model connected. Using the offline helper"
-    : "";
 
   return (
     <div className="mx-auto grid max-w-6xl gap-10 px-4 pb-24 pt-2 sm:px-8 lg:grid-cols-[minmax(0,430px)_minmax(0,1fr)] lg:gap-12">
@@ -257,10 +245,6 @@ export default function Planner() {
                 Voice replies: {voiceOn ? "on" : "off"}
               </button>
             </div>
-            <p className="caps mt-5 text-[0.5rem] leading-relaxed text-taupe">
-              {brain}
-              {source === "fallback" && status?.llm.reachable ? " · last reply used the offline helper" : ""}
-            </p>
           </div>
         </ArchReveal>
       </div>

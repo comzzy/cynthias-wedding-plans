@@ -110,7 +110,7 @@ export function fallbackPatch(text: string, plan: Plan): PlanPatch {
   } else if (!plan.tasks.length) {
     reply = "Tell me the budget, the guest count, the city and the month, and I'll lay it all out.";
   } else {
-    reply = "I noted that. My planning model is offline right now, so I can only catch budgets, guest counts, dates and bookings.";
+    reply = "I noted that. Right now I can only catch budgets, guest counts, dates and bookings.";
   }
   return { reply, facts, vendors, completeTasks };
 }

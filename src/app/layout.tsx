@@ -13,7 +13,7 @@ import Backdrop from "@/components/Backdrop";
 
 export const metadata: Metadata = {
   title: "Cynthia's Wedding Plans",
-  description: "A voice wedding planner made by Kane for Cynthia. Speak your plans; an open-weight model keeps the checklist, the budget and the countdown, and ElevenLabs gives it a warm voice.",
+  description: "A voice wedding planner made by Kane for Cynthia. Speak your plans, and it keeps the checklist, the budget and the countdown.",
 };
 
 export const viewport: Viewport = { themeColor: "#f5f1eb", width: "device-width", initialScale: 1 };

@@ -41,9 +41,9 @@ const PARTS = [
 
 const STEPS = [
   ["You speak", "Tap the mic and talk the way you'd tell your sister. Lagos traffic, the family outfit colours and all."],
-  ["It listens", "ElevenLabs Scribe turns your voice into words, Nigerian names and all."],
-  ["It plans", "An open-weight model reads the words and updates the checklist, budget, timeline and vendors."],
-  ["It answers", "A warm ElevenLabs voice tells you what changed and what to do next."],
+  ["It listens", "It catches every word, Nigerian names and all."],
+  ["It plans", "It updates the checklist, budget, timeline and vendors."],
+  ["It answers", "A warm voice tells you what changed and what to do next."],
 ];
 
 export default function Home() {
@@ -142,14 +142,6 @@ export default function Home() {
             </Reveal>
           ))}
         </ol>
-        <Reveal delay={0.2}>
-          <div className="paper mx-auto mt-16 max-w-2xl rounded-sm px-7 py-8 text-center sm:px-12">
-            <p className="font-display text-2xl leading-snug text-cocoa">
-              The thinking is done by an <em>open-weight</em> model, so it can run on Cynthia&rsquo;s own laptop with Ollama. Her guest list and her budget never have to leave the house.
-            </p>
-            <p className="caps mt-5 text-[0.62rem] text-cocoa-soft">Open model for the plan · ElevenLabs for the voice</p>
-          </div>
-        </Reveal>
       </section>
 
       {/* NOTE */}

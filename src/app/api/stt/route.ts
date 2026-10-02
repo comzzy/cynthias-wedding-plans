@@ -5,7 +5,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
-  if (!process.env.ELEVENLABS_API_KEY) return NextResponse.json({ error: "Voice is not set up yet (ELEVENLABS_API_KEY missing)." }, { status: 503 });
+  if (!process.env.ELEVENLABS_API_KEY) return NextResponse.json({ error: "Voice isn't ready yet. You can type instead." }, { status: 503 });
   const form = await req.formData().catch(() => null);
   const audio = form?.get("audio");
   if (!(audio instanceof Blob) || audio.size === 0) return NextResponse.json({ error: "No audio received." }, { status: 400 });
