@@ -11,9 +11,16 @@ import "./globals.css";
 import Backdrop from "@/components/Backdrop";
 
 
+const title = "Cynthia's Wedding Plans";
+const description = "A voice wedding planner made by Kane for Cynthia. Speak your plans, and it keeps the checklist, the budget and the countdown.";
+
 export const metadata: Metadata = {
-  title: "Cynthia's Wedding Plans",
-  description: "A voice wedding planner made by Kane for Cynthia. Speak your plans, and it keeps the checklist, the budget and the countdown.",
+  metadataBase: new URL("https://cynthias-wedding.vercel.app"),
+  title,
+  description,
+  applicationName: title,
+  openGraph: { type: "website", url: "/", siteName: title, title, description, locale: "en_NG" },
+  twitter: { card: "summary_large_image", title, description },
 };
 
 export const viewport: Viewport = { themeColor: "#f5f1eb", width: "device-width", initialScale: 1 };
