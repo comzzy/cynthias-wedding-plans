@@ -10,7 +10,7 @@ import { listRsvps } from "@/lib/store";
 import { latestPerGuest, totals } from "@/lib/guests";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "Guest list · Cynthia's Wedding Plans", robots: { index: false } };
+export const metadata: Metadata = { title: "Guest list · Cynthia's Wedding Plans", robots: { index: false, follow: false, nocache: true, googleBot: { index: false, follow: false } } };
 
 const when = (iso: string) =>
   new Date(iso).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", timeZone: "Africa/Lagos" });

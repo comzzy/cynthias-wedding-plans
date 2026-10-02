@@ -266,8 +266,8 @@ export default function Planner() {
           <PlanBoard plan={plan} onToggle={(id) => setPlan((p) => ({ ...p, tasks: p.tasks.map((t) => (t.id === id ? { ...t, done: !t.done } : t)) }))} />
 
           <div className="mt-6 grid gap-3 sm:grid-cols-2">
-            <Link href="/rsvp/list" className="paper group flex items-center justify-between rounded-sm px-5 py-4 transition-colors hover:bg-white/70">
-              <span><span className="caps block text-[0.55rem] text-cocoa-soft">Part II</span><span className="font-display text-xl text-cocoa">The guest list</span></span>
+            <Link href="/rsvp" className="paper group flex items-center justify-between rounded-sm px-5 py-4 transition-colors hover:bg-white/70">
+              <span><span className="caps block text-[0.55rem] text-cocoa-soft">Part II</span><span className="font-display text-xl text-cocoa">Voice RSVP</span></span>
               <span className="text-rosegold-deep transition-transform group-hover:translate-x-1">→</span>
             </Link>
             <Link href="/guestbook" className="paper group flex items-center justify-between rounded-sm px-5 py-4 transition-colors hover:bg-white/70">
