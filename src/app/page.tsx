@@ -151,7 +151,7 @@ export default function Home() {
           <p className="mt-4 text-center font-script text-5xl text-rosegold-deep sm:text-6xl">Cynthia,</p>
           <div className="mt-7 space-y-5 font-display text-xl leading-relaxed text-cocoa-soft sm:text-[1.4rem]">
             <p>
-              Since the day you said yes, your head has been full of venues, guest lists, aso-ebi colours and a hundred little decisions. I couldn&rsquo;t plan your wedding for you, but I could build something that carries the weight with you.
+              Since the day you said yes, your head has been full of venues, guest lists, matching outfit colours and a hundred little decisions. I couldn&rsquo;t plan your wedding for you, but I could build something that carries the weight with you.
             </p>
             <p>
               So this is my wedding gift: a planner that listens. Tell it what&rsquo;s on your mind, and it keeps the list, minds the budget, counts down the days and talks you through what&rsquo;s next, so you can spend less time worrying and more time enjoying every moment before you walk down that aisle.
